@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galaxy StudyVerse - Schedule</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --galaxy-purple: #8a2be2;
+            --galaxy-dark: #0f0f23;
+            --galaxy-blue: #1a1a3a;
+            --star-yellow: #ffd700;
+            --planet-green: #32cd32;
+            --flower-pink: #ff69b4;
+            --break-red: #ff4444;
+            --text-light: #f0f0f0;
+            --panel-bg: rgba(26, 26, 58, 0.9);
+            --shadow-glow: 0 0 15px rgba(138, 43, 226, 0.5);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--galaxy-dark);
+            background-image: 
+                radial-gradient(white 1px, transparent 1px),
+                radial-gradient(white 1px, transparent 1px);
+            background-size: 50px 50px, 80px 80px;
+            background-position: 0 0, 40px 40px;
+            color: var(--text-light);
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Stars Background */
+        .stars-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .star {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 1; }
+        }
+
+        /* Navbar */
+        .navbar {
+            background-color: rgba(20, 10, 40, 0.8);
+            padding: 15px 0;
+            border-bottom: 2px solid var(--galaxy-purple);
+            box-shadow: var(--shadow-glow);
+            position: relative;
+            z-index: 10;
+        }
+
+        .navbar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo i {
+            font-size: 2rem;
+            color: var(--star-yellow);
+        }
+
+        .logo h1 {
+            font-size: 1.5rem;
+            background: linear-gradient(to right, #ffd700, #ff69b4);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: color 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-links a:hover {
+            color: var(--flower-pink);
+        }
+
+        .nav-links a.active {
+            color: var(--star-yellow);
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Page Header */
+        .page-header {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .page-header h2 {
+            font-size: 3rem;
+            color: var(--star-yellow);
+            margin-bottom: 15px;
+            text-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+        }
+
+        .page-header p {
+            font-size: 1.2rem;
+            color: #ccc;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Calendar Container */
+        .calendar-container {
+            background-color: var(--panel-bg);
+            border-radius: 20px;
+            padding: 40px;
+            margin: 40px auto;
+            border: 2px solid var(--galaxy-purple);
+            box-shadow: var(--shadow-glow);
+            max-width: 1200px;
+        }
+
+        /* Calendar Header */
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .calendar-title {
+            color: var(--star-yellow);
+            font-size: 2rem;
+        }
+
+        .calendar-controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .control-btn {
+            background-color: rgba(138, 43, 226, 0.3);
+            border: 1px solid var(--galaxy-purple);
+            color: var(--text-light);
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .control-btn:hover {
+            background-color: rgba(138, 43, 226, 0.5);
+            transform: translateY(-2px);
+        }
+
+        /* Calendar Grid */
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 15px;
+        }
+
+        /* Days Header */
+        .day-header {
+            text-align: center;
+            padding: 15px;
+            color: var(--flower-pink);
+            font-weight: bold;
+            background-color: rgba(138, 43, 226, 0.2);
+            border-radius: 10px;
+            border: 1px solid var(--galaxy-purple);
+        }
+
+        /* Calendar Day */
+        .calendar-day {
+            min-height: 120px;
+            background-color: rgba(0, 0, 0, 0.3);
+            border: 2px solid transparent;
+            border-radius: 10px;
+            padding: 15px;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .calendar-day:hover {
+            border-color: var(--galaxy-purple);
+            transform: translateY(-2px);
+        }
+
+        .calendar-day.today {
+            border-color: var(--star-yellow);
+            background-color: rgba(255, 215, 0, 0.1);
+        }
+
+        .day-number {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: var(--text-light);
+            margin-bottom: 10px;
+            display: inline-block;
+            padding: 5px 10px;
+            background-color: rgba(138, 43, 226, 0.3);
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            text-align: center;
+            line-height: 25px;
+        }
+
+        .day-tasks {
+            margin-top: 10px;
+        }
+
+        .task-item {
+            background-color: rgba(255, 105, 180, 0.2);
+            padding: 8px;
+            border-radius: 6px;
+            margin-bottom: 5px;
+            font-size: 0.85rem;
+            border-left: 3px solid var(--flower-pink);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .task-item:hover {
+            background-color: rgba(255, 105, 180, 0.3);
+            transform: translateX(5px);
+        }
+
+        .task-item.completed {
+            opacity: 0.6;
+            text-decoration: line-through;
+            border-left-color: var(--planet-green);
+        }
+
+        /* Add Task Button */
+        .add-task-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(to right, var(--galaxy-purple), var(--flower-pink));
+            color: white;
+            border: none;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: var(--shadow-glow);
+            transition: all 0.3s;
+            z-index: 100;
+        }
+
+        .add-task-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(255, 105, 180, 0.5);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: var(--panel-bg);
+            border-radius: 20px;
+            padding: 40px;
+            width: 90%;
+            max-width: 500px;
+            border: 2px solid var(--galaxy-purple);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .modal-title {
+            color: var(--star-yellow);
+            font-size: 1.8rem;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-light);
+            font-size: 2rem;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .modal-close:hover {
+            color: var(--flower-pink);
+        }
+
+        /* Form Groups */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--star-yellow);
+            font-weight: 600;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            border: 2px solid rgba(138, 43, 226, 0.5);
+            background-color: rgba(0, 0, 0, 0.5);
+            color: var(--text-light);
+            font-size: 1rem;
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: var(--flower-pink);
+        }
+
+        .form-row {
+            display: flex;
+            gap: 20px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        .modal-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(to right, var(--galaxy-purple), var(--flower-pink));
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .modal-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: #aaa;
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(138, 43, 226, 0.3);
+            margin-top: 80px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .calendar-grid {
+                grid-template-columns: repeat(7, 1fr);
+                gap: 10px;
+            }
+            
+            .calendar-day {
+                min-height: 100px;
+                padding: 10px;
+            }
+            
+            .day-number {
+                font-size: 1.1rem;
+                width: 30px;
+                height: 30px;
+                line-height: 20px;
+            }
+            
+            .task-item {
+                font-size: 0.75rem;
+                padding: 5px;
+            }
+            
+            .calendar-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .calendar-controls {
+                justify-content: center;
+            }
+            
+            .nav-links {
+                gap: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .calendar-grid {
+                grid-template-columns: repeat(7, 1fr);
+                gap: 5px;
+            }
+            
+            .calendar-day {
+                min-height: 80px;
+                padding: 5px;
+            }
+            
+            .day-header {
+                padding: 10px 5px;
+                font-size: 0.9rem;
+            }
+            
+            .task-item {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background Stars -->
+    <div class="stars-container" id="stars-container"></div>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <i class="fas fa-globe-americas"></i>
+                <h1>Galaxy StudyVerse</h1>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="store.html"><i class="fas fa-store"></i> Store</a></li>
+                <li><a href="schedule.html" class="active"><i class="fas fa-calendar-alt"></i> Schedule</a></li>
+                <li><a href="login.html"><i class="fas fa-user-astronaut"></i> Profile</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h2>Study Schedule</h2>
+            <p>Plan your cosmic study journey. Each completed task brings you closer to new planets and flowers.</p>
+        </div>
+
+        <!-- Calendar Container -->
+        <div class="calendar-container">
+            <!-- Calendar Header -->
+            <div class="calendar-header">
+                <div class="calendar-title" id="calendar-title">January 2024</div>
+                <div class="calendar-controls">
+                    <button class="control-btn" id="prev-month">
+                        <i class="fas fa-chevron-left"></i> Prev
+                    </button>
+                    <button class="control-btn" id="today-btn">Today</button>
+                    <button class="control-btn" id="next-month">
+                        Next <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Calendar Grid -->
+            <div class="calendar-grid" id="calendar-grid">
+                <!-- Calendar will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Task Button -->
+    <button class="add-task-btn" id="add-task-btn">
+        <i class="fas fa-plus"></i>
+    </button>
+
+    <!-- Add Task Modal -->
+    <div class="modal" id="task-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Add New Task</h3>
+                <button class="modal-close" id="modal-close">&times;</button>
+            </div>
+            <form id="task-form">
+                <div class="form-group">
+                    <label for="task-title">Task Title</label>
+                    <input type="text" id="task-title" placeholder="Enter task title" required>
+                </div>
+                <div class="form-group">
+                    <label for="task-date">Date</label>
+                    <input type="date" id="task-date" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="task-start">Start Time</label>
+                        <input type="time" id="task-start" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="task-end">End Time</label>
+                        <input type="time" id="task-end" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="task-priority">Priority</label>
+                    <select id="task-priority">
+                        <option value="low">Low</option>
+                        <option value="medium" selected>Medium</option>
+                        <option value="high">High</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="task-planet">Related Planet (Optional)</label>
+                    <select id="task-planet">
+                        <option value="">None</option>
+                        <option value="earth">Earth</option>
+                        <option value="venus">Venus</option>
+                        <option value="mars">Mars</option>
+                        <option value="saturn">Saturn</option>
+                        <option value="mercury">Mercury</option>
+                        <option value="neptune">Neptune</option>
+                    </select>
+                </div>
+                <button type="submit" class="modal-btn">Add Task</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <!-- Footer text removed as requested -->
+    </footer>
+
+    <script>
+        // Create Background Stars
+        function createStars() {
+            const starsContainer = document.getElementById('stars-container');
+            for (let i = 0; i < 100; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
+                star.style.width = star.style.height = Math.random() * 3 + 1 + 'px';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 5 + 's';
+                starsContainer.appendChild(star);
+            }
+        }
+
+        // Check if user is logged in
+        function checkLogin() {
+            const isLoggedIn = localStorage.getItem('galaxy_user_logged_in');
+            const userName = localStorage.getItem('galaxy_user_name');
+
+            if (isLoggedIn !== 'true' || !userName) {
+                // User is not logged in, redirect to login page
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Load user tasks
+            loadUserTasks(userName);
+        }
+
+        // Calendar variables
+        let currentDate = new Date();
+        let userTasks = [];
+
+        // Days of week
+        const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+        // Months
+        const months = [
+            'January', 'February', 'March', 'April', 'May', 'June',
+            'July', 'August', 'September', 'October', 'November', 'December'
+        ];
+
+        // Load user tasks
+        function loadUserTasks(username) {
+            const userData = JSON.parse(localStorage.getItem(`galaxy_user_${username}`) || '{}');
+            userTasks = userData.tasks || [];
+            renderCalendar();
+        }
+
+        // Save user tasks
+        function saveUserTasks(username) {
+            const userData = JSON.parse(localStorage.getItem(`galaxy_user_${username}`) || '{}');
+            userData.tasks = userTasks;
+            localStorage.setItem(`galaxy_user_${username}`, JSON.stringify(userData));
+        }
+
+        // Render calendar
+        function renderCalendar() {
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+            
+            // Update calendar title
+            document.getElementById('calendar-title').textContent = `${months[month]} ${year}`;
+            
+            // Get first day of month and number of days
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            const daysInMonth = lastDay.getDate();
+            
+            // Clear calendar grid
+            const calendarGrid = document.getElementById('calendar-grid');
+            calendarGrid.innerHTML = '';
+            
+            // Add day headers
+            for (let i = 0; i < 7; i++) {
+                const dayHeader = document.createElement('div');
+                dayHeader.className = 'day-header';
+                dayHeader.textContent = daysOfWeek[i];
+                calendarGrid.appendChild(dayHeader);
+            }
+            
+            // Add empty cells for days before first day of month
+            const firstDayIndex = firstDay.getDay();
+            for (let i = 0; i < firstDayIndex; i++) {
+                const emptyDay = document.createElement('div');
+                emptyDay.className = 'calendar-day';
+                calendarGrid.appendChild(emptyDay);
+            }
+            
+            // Add days of month
+            const today = new Date();
+            const isCurrentMonth = today.getFullYear() === year && today.getMonth() === month;
+            
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day';
+                
+                // Check if this is today
+                if (isCurrentMonth && day === today.getDate()) {
+                    dayElement.classList.add('today');
+                }
+                
+                // Day number
+                const dayNumber = document.createElement('div');
+                dayNumber.className = 'day-number';
+                dayNumber.textContent = day;
+                dayElement.appendChild(dayNumber);
+                
+                // Get tasks for this day
+                const dateStr = `${year}-${(month + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+                const dayTasks = userTasks.filter(task => task.date === dateStr);
+                
+                // Add tasks
+                const tasksContainer = document.createElement('div');
+                tasksContainer.className = 'day-tasks';
+                
+                dayTasks.slice(0, 3).forEach(task => {
+                    const taskElement = document.createElement('div');
+                    taskElement.className = `task-item ${task.completed ? 'completed' : ''}`;
+                    taskElement.textContent = task.title;
+                    taskElement.onclick = () => toggleTaskCompletion(task.id);
+                    tasksContainer.appendChild(taskElement);
+                });
+                
+                // Show count if more than 3 tasks
+                if (dayTasks.length > 3) {
+                    const moreTasks = document.createElement('div');
+                    moreTasks.className = 'task-item';
+                    moreTasks.textContent = `+${dayTasks.length - 3} more`;
+                    moreTasks.style.opacity = '0.7';
+                    tasksContainer.appendChild(moreTasks);
+                }
+                
+                dayElement.appendChild(tasksContainer);
+                calendarGrid.appendChild(dayElement);
+            }
+        }
+
+        // Add new task
+        function addNewTask(taskData) {
+            const username = localStorage.getItem('galaxy_user_name');
+            
+            const newTask = {
+                id: Date.now(),
+                ...taskData,
+                completed: false,
+                createdAt: new Date().toISOString()
+            };
+            
+            userTasks.push(newTask);
+            saveUserTasks(username);
+            renderCalendar();
+        }
+
+        // Toggle task completion
+        function toggleTaskCompletion(taskId) {
+            const username = localStorage.getItem('galaxy_user_name');
+            const task = userTasks.find(t => t.id === taskId);
+            
+            if (task) {
+                task.completed = !task.completed;
+                saveUserTasks(username);
+                renderCalendar();
+            }
+        }
+
+        // Initialize calendar
+        function initCalendar() {
+            // Set today's date as default in form
+            const today = new Date();
+            const todayStr = today.toISOString().split('T')[0];
+            document.getElementById('task-date').value = todayStr;
+            
+            // Set default times
+            const now = new Date();
+            const nextHour = new Date(now.getTime() + 60 * 60 * 1000);
+            
+            document.getElementById('task-start').value = 
+                `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+            
+            document.getElementById('task-end').value = 
+                `${nextHour.getHours().toString().padStart(2, '0')}:${nextHour.getMinutes().toString().padStart(2, '0')}`;
+            
+            // Event listeners for calendar controls
+            document.getElementById('prev-month').addEventListener('click', () => {
+                currentDate.setMonth(currentDate.getMonth() - 1);
+                renderCalendar();
+            });
+            
+            document.getElementById('next-month').addEventListener('click', () => {
+                currentDate.setMonth(currentDate.getMonth() + 1);
+                renderCalendar();
+            });
+            
+            document.getElementById('today-btn').addEventListener('click', () => {
+                currentDate = new Date();
+                renderCalendar();
+            });
+            
+            // Modal controls
+            document.getElementById('add-task-btn').addEventListener('click', () => {
+                document.getElementById('task-modal').style.display = 'flex';
+            });
+            
+            document.getElementById('modal-close').addEventListener('click', () => {
+                document.getElementById('task-modal').style.display = 'none';
+            });
+            
+            // Close modal when clicking outside
+            window.addEventListener('click', (event) => {
+                const modal = document.getElementById('task-modal');
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+            
+            // Task form submission
+            document.getElementById('task-form').addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                const taskData = {
+                    title: document.getElementById('task-title').value,
+                    date: document.getElementById('task-date').value,
+                    startTime: document.getElementById('task-start').value,
+                    endTime: document.getElementById('task-end').value,
+                    priority: document.getElementById('task-priority').value,
+                    planet: document.getElementById('task-planet').value
+                };
+                
+                addNewTask(taskData);
+                
+                // Reset form and close modal
+                document.getElementById('task-form').reset();
+                document.getElementById('task-modal').style.display = 'none';
+                
+                // Reset defaults
+                const today = new Date();
+                const todayStr = today.toISOString().split('T')[0];
+                document.getElementById('task-date').value = todayStr;
+                
+                const now = new Date();
+                const nextHour = new Date(now.getTime() + 60 * 60 * 1000);
+                
+                document.getElementById('task-start').value = 
+                    `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+                
+                document.getElementById('task-end').value = 
+                    `${nextHour.getHours().toString().padStart(2, '0')}:${nextHour.getMinutes().toString().padStart(2, '0')}`;
+            });
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            createStars();
+            checkLogin();
+            initCalendar();
+        });
+    </script>
+</body>
+</html>

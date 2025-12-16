@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galaxy StudyVerse - Home</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --galaxy-purple: #8a2be2;
+            --galaxy-dark: #0f0f23;
+            --galaxy-blue: #1a1a3a;
+            --star-yellow: #ffd700;
+            --planet-green: #32cd32;
+            --flower-pink: #ff69b4;
+            --break-red: #ff4444;
+            --text-light: #f0f0f0;
+            --panel-bg: rgba(26, 26, 58, 0.9);
+            --shadow-glow: 0 0 15px rgba(138, 43, 226, 0.5);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--galaxy-dark);
+            background-image: 
+                radial-gradient(white 1px, transparent 1px),
+                radial-gradient(white 1px, transparent 1px);
+            background-size: 50px 50px, 80px 80px;
+            background-position: 0 0, 40px 40px;
+            color: var(--text-light);
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Stars Background */
+        .stars-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .star {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 1; }
+        }
+
+        /* Navbar */
+        .navbar {
+            background-color: rgba(20, 10, 40, 0.8);
+            padding: 15px 0;
+            border-bottom: 2px solid var(--galaxy-purple);
+            box-shadow: var(--shadow-glow);
+            position: relative;
+            z-index: 10;
+        }
+
+        .navbar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo i {
+            font-size: 2rem;
+            color: var(--star-yellow);
+        }
+
+        .logo h1 {
+            font-size: 1.5rem;
+            background: linear-gradient(to right, #ffd700, #ff69b4);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: color 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-links a:hover {
+            color: var(--flower-pink);
+        }
+
+        .nav-links a.active {
+            color: var(--star-yellow);
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 100px 20px;
+            position: relative;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero h2 {
+            font-size: 3.5rem;
+            color: var(--star-yellow);
+            margin-bottom: 20px;
+            text-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+            background: linear-gradient(to right, #ffd700, #ff69b4);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.4rem;
+            color: #ccc;
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+
+        /* Stats Section */
+        .stats-section {
+            background-color: var(--panel-bg);
+            border-radius: 20px;
+            padding: 40px;
+            margin: 40px auto;
+            max-width: 1000px;
+            border: 2px solid var(--galaxy-purple);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .stats-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .stats-header h3 {
+            color: var(--star-yellow);
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .stats-header p {
+            color: #ccc;
+            font-size: 1.1rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .stat-card {
+            background-color: rgba(138, 43, 226, 0.2);
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            border: 1px solid var(--galaxy-purple);
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-icon {
+            font-size: 2.5rem;
+            color: var(--star-yellow);
+            margin-bottom: 15px;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--text-light);
+            display: block;
+        }
+
+        .stat-label {
+            color: #ccc;
+            font-size: 1rem;
+            margin-top: 5px;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin: 60px 0;
+        }
+
+        .action-card {
+            background-color: var(--panel-bg);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            border: 2px solid var(--galaxy-purple);
+            box-shadow: var(--shadow-glow);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .action-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--star-yellow);
+            box-shadow: 0 15px 30px rgba(138, 43, 226, 0.3);
+        }
+
+        .action-icon {
+            font-size: 3.5rem;
+            color: var(--flower-pink);
+            margin-bottom: 20px;
+        }
+
+        .action-card h4 {
+            color: var(--star-yellow);
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+
+        .action-card p {
+            color: #ccc;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .action-btn {
+            display: inline-block;
+            padding: 12px 25px;
+            background: linear-gradient(to right, var(--galaxy-purple), var(--flower-pink));
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: bold;
+            transition: transform 0.3s;
+        }
+
+        .action-btn:hover {
+            transform: scale(1.05);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: #aaa;
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(138, 43, 226, 0.3);
+            margin-top: 80px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h2 {
+                font-size: 2.5rem;
+            }
+            
+            .hero p {
+                font-size: 1.2rem;
+            }
+            
+            .nav-links {
+                gap: 15px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero h2 {
+                font-size: 2rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background Stars -->
+    <div class="stars-container" id="stars-container"></div>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <i class="fas fa-globe-americas"></i>
+                <h1>Galaxy StudyVerse</h1>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html" class="active"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="store.html"><i class="fas fa-store"></i> Store</a></li>
+                <li><a href="schedule.html"><i class="fas fa-calendar-alt"></i> Schedule</a></li>
+                <li><a href="login.html"><i class="fas fa-user-astronaut"></i> Profile</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Hero Section -->
+        <div class="hero">
+            <div class="hero-content">
+                <h2>Welcome to Galaxy StudyVerse</h2>
+                <p>Transform your study routine into an interstellar adventure. Collect planets, grow cosmic flowers, and conquer your goals among the stars.</p>
+                <div id="welcome-message" style="font-size: 1.2rem; color: var(--star-yellow); margin-bottom: 30px;"></div>
+            </div>
+        </div>
+
+        <!-- Stats Section -->
+        <div class="stats-section">
+            <div class="stats-header">
+                <h3>Your Study Statistics</h3>
+                <p>Track your progress and achievements in your cosmic journey</p>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-coins"></i></div>
+                    <span class="stat-value" id="coins-stat">1250</span>
+                    <span class="stat-label">Coins</span>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-globe"></i></div>
+                    <span class="stat-value" id="planets-stat">1/6</span>
+                    <span class="stat-label">Planets Owned</span>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-seedling"></i></div>
+                    <span class="stat-value" id="flowers-stat">2/18</span>
+                    <span class="stat-label">Flowers Grown</span>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-clock"></i></div>
+                    <span class="stat-value" id="time-stat">0h</span>
+                    <span class="stat-label">Study Time</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <div class="action-card" onclick="window.location.href='store.html'">
+                <div class="action-icon"><i class="fas fa-store"></i></div>
+                <h4>Visit Store</h4>
+                <p>Buy new planets and cosmic flowers to expand your galaxy</p>
+                <a href="store.html" class="action-btn">Go to Store</a>
+            </div>
+            <div class="action-card" onclick="window.location.href='schedule.html'">
+                <div class="action-icon"><i class="fas fa-calendar-alt"></i></div>
+                <h4>Study Schedule</h4>
+                <p>Plan your study sessions and track your progress</p>
+                <a href="schedule.html" class="action-btn">View Schedule</a>
+            </div>
+            <div class="action-card" onclick="window.location.href='login.html'">
+                <div class="action-icon"><i class="fas fa-user-astronaut"></i></div>
+                <h4>Your Profile</h4>
+                <p>View your achievements and manage your account</p>
+                <a href="login.html" class="action-btn">View Profile</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <!-- Footer text removed as requested -->
+    </footer>
+
+    <script>
+        // Create Background Stars
+        function createStars() {
+            const starsContainer = document.getElementById('stars-container');
+            for (let i = 0; i < 100; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
+                star.style.width = star.style.height = Math.random() * 3 + 1 + 'px';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 5 + 's';
+                starsContainer.appendChild(star);
+            }
+        }
+
+        // Check if user is logged in
+        function checkLogin() {
+            const isLoggedIn = localStorage.getItem('galaxy_user_logged_in');
+            const userName = localStorage.getItem('galaxy_user_name');
+
+            if (isLoggedIn !== 'true' || !userName) {
+                // User is not logged in, redirect to login page
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Update welcome message
+            document.getElementById('welcome-message').textContent = `Welcome back, ${userName}!`;
+
+            // Load user data and update stats
+            const userData = JSON.parse(localStorage.getItem(`galaxy_user_${userName}`) || '{}');
+            updateStats(userData);
+        }
+
+        // Update stats
+        function updateStats(userData) {
+            document.getElementById('coins-stat').textContent = userData.coins || 1250;
+            document.getElementById('planets-stat').textContent = (userData.ownedPlanets ? userData.ownedPlanets.length : 1) + '/6';
+            document.getElementById('flowers-stat').textContent = (userData.ownedFlowers ? userData.ownedFlowers.length : 2) + '/18';
+            
+            // Calculate study time
+            const studyTime = userData.studyStats ? Math.floor(userData.studyStats.totalMinutes / 60) : 0;
+            document.getElementById('time-stat').textContent = studyTime + 'h';
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            createStars();
+            checkLogin();
+        });
+    </script>
+</body>
+</html>

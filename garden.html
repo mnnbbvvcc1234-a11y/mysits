@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galaxy StudyVerse - Garden</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --galaxy-purple: #8a2be2;
+            --galaxy-dark: #0f0f23;
+            --galaxy-blue: #1a1a3a;
+            --star-yellow: #ffd700;
+            --planet-green: #32cd32;
+            --flower-pink: #ff69b4;
+            --text-light: #f0f0f0;
+            --panel-bg: rgba(26, 26, 58, 0.9);
+            --shadow-glow: 0 0 15px rgba(138, 43, 226, 0.5);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--galaxy-dark);
+            color: var(--text-light);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Stars Background */
+        .stars-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .star {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 1; }
+        }
+
+        /* Navbar */
+        .navbar {
+            background-color: rgba(20, 10, 40, 0.9);
+            padding: 15px 0;
+            border-bottom: 2px solid var(--galaxy-purple);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--star-yellow);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-light);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 8px 15px;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .nav-links a:hover {
+            background: rgba(138, 43, 226, 0.3);
+        }
+
+        .nav-links a.active {
+            background: rgba(138, 43, 226, 0.5);
+            color: var(--star-yellow);
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        .page-header {
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .page-header h1 {
+            color: var(--star-yellow);
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .page-header p {
+            color: #aaa;
+            font-size: 1.1rem;
+        }
+
+        /* Stats Bar */
+        .stats-bar {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .stat-box {
+            flex: 1;
+            min-width: 200px;
+            background: var(--panel-bg);
+            border: 1px solid var(--galaxy-purple);
+            border-radius: 10px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .stat-box i {
+            font-size: 2rem;
+            color: var(--star-yellow);
+        }
+
+        .stat-info h3 {
+            color: var(--text-light);
+            font-size: 1.8rem;
+            margin: 0;
+        }
+
+        .stat-info p {
+            color: #aaa;
+            margin: 0;
+            font-size: 0.9rem;
+        }
+
+        /* Planet Tabs */
+        .planet-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+        }
+
+        .planet-tab {
+            padding: 12px 25px;
+            background: var(--panel-bg);
+            border: 2px solid var(--galaxy-purple);
+            border-radius: 10px;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: all 0.3s;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .planet-tab:hover {
+            border-color: var(--star-yellow);
+            transform: translateY(-2px);
+        }
+
+        .planet-tab.active {
+            background: rgba(138, 43, 226, 0.3);
+            border-color: var(--star-yellow);
+            color: var(--star-yellow);
+        }
+
+        /* Garden Container */
+        .garden-container {
+            background: var(--panel-bg);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 2px solid var(--galaxy-purple);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .garden-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .garden-title h2 {
+            color: var(--star-yellow);
+            font-size: 1.8rem;
+        }
+
+        /* Garden Grid */
+        .garden-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        /* Garden Slot */
+        .garden-slot {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            border: 2px solid var(--galaxy-purple);
+            transition: all 0.3s;
+        }
+
+        .garden-slot.empty {
+            border-style: dashed;
+            opacity: 0.7;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 200px;
+            cursor: pointer;
+        }
+
+        .garden-slot.empty:hover {
+            border-color: var(--star-yellow);
+            opacity: 1;
+        }
+
+        .empty-icon {
+            font-size: 3rem;
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .empty-text {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .garden-slot.planted {
+            border-color: var(--planet-green);
+        }
+
+        .slot-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .flower-name {
+            color: var(--flower-pink);
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .water-count {
+            background: rgba(74, 144, 226, 0.2);
+            color: #4a90e2;
+            padding: 3px 10px;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .flower-icon {
+            font-size: 4rem;
+            text-align: center;
+            margin: 10px 0;
+            color: var(--flower-pink);
+        }
+
+        /* Growth Bar */
+        .growth-container {
+            margin: 15px 0;
+        }
+
+        .growth-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+            color: #aaa;
+        }
+
+        .growth-bar {
+            height: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .growth-progress {
+            height: 100%;
+            background: linear-gradient(90deg, var(--planet-green), var(--star-yellow));
+            border-radius: 5px;
+            transition: width 0.3s ease;
+        }
+
+        /* Flower Stats */
+        .flower-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .flower-stat {
+            text-align: center;
+            padding: 8px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+        }
+
+        .flower-stat i {
+            color: var(--star-yellow);
+            margin-bottom: 5px;
+        }
+
+        .flower-stat-value {
+            font-weight: bold;
+            color: var(--text-light);
+            display: block;
+        }
+
+        .flower-stat-label {
+            font-size: 0.8rem;
+            color: #aaa;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .water-btn, .study-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .water-btn {
+            background: linear-gradient(135deg, #4a90e2, #357abd);
+            color: white;
+        }
+
+        .water-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(74, 144, 226, 0.4);
+        }
+
+        .water-btn:disabled {
+            background: #666;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .study-btn {
+            background: linear-gradient(135deg, var(--galaxy-purple), var(--flower-pink));
+            color: white;
+            text-decoration: none;
+        }
+
+        .study-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(138, 43, 226, 0.4);
+        }
+
+        /* Messages */
+        .message {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 10px;
+            color: white;
+            font-weight: bold;
+            z-index: 1000;
+            animation: slideIn 0.5s, fadeOut 0.5s 2.5s;
+            animation-fill-mode: forwards;
+        }
+
+        .message.success {
+            background: rgba(50, 205, 50, 0.9);
+            border-left: 5px solid var(--planet-green);
+        }
+
+        .message.error {
+            background: rgba(255, 68, 68, 0.9);
+            border-left: 5px solid #ff4444;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            border-top: 1px solid rgba(138, 43, 226, 0.3);
+            margin-top: 50px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .stats-bar {
+                flex-direction: column;
+            }
+            
+            .garden-grid {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            }
+            
+            .nav-links {
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Stars Background -->
+    <div class="stars-container" id="stars-container"></div>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-globe-americas"></i>
+                <span>Galaxy StudyVerse</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="store.html"><i class="fas fa-store"></i> Store</a></li>
+                <li><a href="schedule.html"><i class="fas fa-calendar-alt"></i> Schedule</a></li>
+                <li><a href="garden.html" class="active"><i class="fas fa-seedling"></i> Garden</a></li>
+                <li><a href="profile.html"><i class="fas fa-user-astronaut"></i> Profile</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1><i class="fas fa-seedling"></i> Cosmic Garden</h1>
+            <p>Grow flowers by completing study sessions. Each flower gives you bonus points!</p>
+        </div>
+
+        <!-- Stats Bar -->
+        <div class="stats-bar">
+            <div class="stat-box">
+                <i class="fas fa-gem"></i>
+                <div class="stat-info">
+                    <h3 id="coins-count">1250</h3>
+                    <p>Coins</p>
+                </div>
+            </div>
+            <div class="stat-box">
+                <i class="fas fa-globe"></i>
+                <div class="stat-info">
+                    <h3 id="planets-count">1</h3>
+                    <p>Planets Owned</p>
+                </div>
+            </div>
+            <div class="stat-box">
+                <i class="fas fa-seedling"></i>
+                <div class="stat-info">
+                    <h3 id="flowers-count">0</h3>
+                    <p>Flowers Planted</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Planet Tabs -->
+        <div class="planet-tabs" id="planet-tabs">
+            <!-- Will be populated by JavaScript -->
+        </div>
+
+        <!-- Garden Container -->
+        <div class="garden-container">
+            <div class="garden-title">
+                <i class="fas fa-globe-americas"></i>
+                <h2 id="current-planet-title">Select a Planet</h2>
+            </div>
+            
+            <div class="garden-grid" id="garden-grid">
+                <!-- Will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Study Button -->
+        <div style="text-align: center; margin: 30px 0;">
+            <a href="focus.html" class="study-btn" style="display: inline-flex; width: auto; padding: 12px 30px;">
+                <i class="fas fa-play-circle"></i>
+                Start Study Session
+            </a>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>© 2024 Galaxy StudyVerse. All rights reserved.</p>
+    </footer>
+
+    <!-- Message Container -->
+    <div id="message-container"></div>
+
+    <script>
+        // Garden Data
+        const gardenData = {
+            currentPlanet: "Earth",
+            planets: {
+                "Earth": {
+                    slots: [
+                        { flower: "Terra Bloom", growth: 0.8, waterNeeded: 2, planet: "Earth" },
+                        { flower: "Solar Bloom", growth: 0.4, waterNeeded: 4, planet: "Earth" },
+                        null,
+                        null,
+                        null,
+                        null
+                    ]
+                },
+                "Mars": {
+                    slots: [null, null, null, null, null, null]
+                },
+                "Venus": {
+                    slots: [null, null, null, null, null, null]
+                }
+            },
+            flowerTypes: {
+                "Terra Bloom": {
+                    icon: "🌹",
+                    color: "#ff69b4",
+                    growthPerWater: 0.3,
+                    bonus: 20,
+                    planet: "Earth"
+                },
+                "Solar Bloom": {
+                    icon: "🌻",
+                    color: "#ffd700",
+                    growthPerWater: 0.25,
+                    bonus: 25,
+                    planet: "Earth"
+                },
+                "Gaia Lily": {
+                    icon: "🌸",
+                    color: "#ffb6c1",
+                    growthPerWater: 0.2,
+                    bonus: 30,
+                    planet: "Earth"
+                }
+            },
+            user: {
+                coins: 1250,
+                ownedPlanets: ["Earth"],
+                ownedFlowers: ["Terra Bloom", "Solar Bloom", "Gaia Lily"]
+            }
+        };
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            createStars();
+            loadUserData();
+            renderPlanetTabs();
+            renderGarden();
+            updateStats();
+        });
+
+        // Create stars background
+        function createStars() {
+            const container = document.getElementById('stars-container');
+            for (let i = 0; i < 50; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.width = star.style.height = Math.random() * 3 + 1 + 'px';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 5 + 's';
+                container.appendChild(star);
+            }
+        }
+
+        // Load user data from localStorage
+        function loadUserData() {
+            const username = localStorage.getItem('galaxy_user_name');
+            if (username) {
+                const userData = JSON.parse(localStorage.getItem(`galaxy_user_${username}`) || '{}');
+                if (userData.garden) {
+                    gardenData.planets = userData.garden.planets || gardenData.planets;
+                    gardenData.user.coins = userData.coins || 1250;
+                    gardenData.user.ownedPlanets = userData.ownedPlanets || ["Earth"];
+                    gardenData.user.ownedFlowers = userData.ownedFlowers || ["Terra Bloom", "Solar Bloom"];
+                }
+            }
+        }
+
+        // Save user data to localStorage
+        function saveUserData() {
+            const username = localStorage.getItem('galaxy_user_name');
+            if (username) {
+                const userData = JSON.parse(localStorage.getItem(`galaxy_user_${username}`) || '{}');
+                userData.garden = {
+                    planets: gardenData.planets
+                };
+                userData.coins = gardenData.user.coins;
+                localStorage.setItem(`galaxy_user_${username}`, JSON.stringify(userData));
+            }
+        }
+
+        // Render planet tabs
+        function renderPlanetTabs() {
+            const tabsContainer = document.getElementById('planet-tabs');
+            tabsContainer.innerHTML = '';
+            
+            gardenData.user.ownedPlanets.forEach(planetName => {
+                const tab = document.createElement('button');
+                tab.className = `planet-tab ${planetName === gardenData.currentPlanet ? 'active' : ''}`;
+                tab.innerHTML = `
+                    <i class="fas fa-globe-americas"></i>
+                    ${planetName}
+                `;
+                tab.onclick = () => selectPlanet(planetName);
+                tabsContainer.appendChild(tab);
+            });
+        }
+
+        // Select planet
+        function selectPlanet(planetName) {
+            gardenData.currentPlanet = planetName;
+            renderPlanetTabs();
+            renderGarden();
+        }
+
+        // Render garden
+        function renderGarden() {
+            const grid = document.getElementById('garden-grid');
+            const title = document.getElementById('current-planet-title');
+            const planet = gardenData.planets[gardenData.currentPlanet];
+            
+            if (!planet) {
+                grid.innerHTML = '<div class="garden-slot empty">No garden data for this planet</div>';
+                return;
+            }
+            
+            title.textContent = `${gardenData.currentPlanet} Garden`;
+            grid.innerHTML = '';
+            
+            planet.slots.forEach((slot, index) => {
+                const slotElement = document.createElement('div');
+                
+                if (slot) {
+                    // Planted slot
+                    const flowerType = gardenData.flowerTypes[slot.flower];
+                    slotElement.className = 'garden-slot planted';
+                    slotElement.innerHTML = `
+                        <div class="slot-header">
+                            <div class="flower-name">${slot.flower}</div>
+                            ${slot.waterNeeded > 0 ? `
+                                <div class="water-count">
+                                    <i class="fas fa-tint"></i>
+                                    ${slot.waterNeeded}
+                                </div>
+                            ` : ''}
+                        </div>
+                        
+                        <div class="flower-icon">${flowerType?.icon || '🌸'}</div>
+                        
+                        <div class="growth-container">
+                            <div class="growth-label">
+                                <span>Growth</span>
+                                <span>${Math.round(slot.growth * 100)}%</span>
+                            </div>
+                            <div class="growth-bar">
+                                <div class="growth-progress" style="width: ${slot.growth * 100}%"></div>
+                            </div>
+                        </div>
+                        
+                        ${slot.waterNeeded > 0 ? `
+                            <button class="water-btn" onclick="waterFlower(${index})">
+                                <i class="fas fa-tint"></i>
+                                Water Flower
+                            </button>
+                        ` : `
+                            <div class="flower-stats">
+                                <div class="flower-stat">
+                                    <i class="fas fa-star"></i>
+                                    <span class="flower-stat-value">+${flowerType?.bonus || 20}</span>
+                                    <span class="flower-stat-label">Points</span>
+                                </div>
+                                <div class="flower-stat">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span class="flower-stat-value">Complete</span>
+                                    <span class="flower-stat-label">Ready!</span>
+                                </div>
+                            </div>
+                        `}
+                    `;
+                } else {
+                    // Empty slot
+                    slotElement.className = 'garden-slot empty';
+                    slotElement.innerHTML = `
+                        <div class="empty-icon">
+                            <i class="fas fa-plus-circle"></i>
+                        </div>
+                        <div class="empty-text">Empty Slot</div>
+                    `;
+                    slotElement.onclick = () => plantFlower(index);
+                }
+                
+                grid.appendChild(slotElement);
+            });
+        }
+
+        // Plant flower
+        function plantFlower(slotIndex) {
+            // Find available flowers
+            const availableFlowers = gardenData.user.ownedFlowers.filter(flowerName => {
+                const planet = gardenData.planets[gardenData.currentPlanet];
+                return !planet.slots.some(slot => slot && slot.flower === flowerName);
+            });
+            
+            if (availableFlowers.length === 0) {
+                showMessage('No flowers available to plant. Visit the store!', 'error');
+                return;
+            }
+            
+            // For simplicity, plant the first available flower
+            const flowerToPlant = availableFlowers[0];
+            const confirmPlant = confirm(`Plant ${flowerToPlant} in this slot?`);
+            
+            if (confirmPlant) {
+                const planet = gardenData.planets[gardenData.currentPlanet];
+                planet.slots[slotIndex] = {
+                    flower: flowerToPlant,
+                    growth: 0,
+                    waterNeeded: 3,
+                    planet: gardenData.currentPlanet
+                };
+                
+                // Remove from owned flowers
+                const flowerIndex = gardenData.user.ownedFlowers.indexOf(flowerToPlant);
+                if (flowerIndex > -1) {
+                    gardenData.user.ownedFlowers.splice(flowerIndex, 1);
+                }
+                
+                saveUserData();
+                renderGarden();
+                updateStats();
+                showMessage(`${flowerToPlant} planted successfully!`, 'success');
+            }
+        }
+
+        // Water flower
+        function waterFlower(slotIndex) {
+            const planet = gardenData.planets[gardenData.currentPlanet];
+            const slot = planet.slots[slotIndex];
+            
+            if (!slot || slot.waterNeeded === 0) return;
+            
+            const flowerType = gardenData.flowerTypes[slot.flower];
+            
+            slot.waterNeeded--;
+            slot.growth += flowerType?.growthPerWater || 0.2;
+            
+            if (slot.growth > 1) {
+                slot.growth = 1;
+                // Give bonus when flower is fully grown
+                gardenData.user.coins += flowerType?.bonus || 20;
+                showMessage(`Flower fully grown! +${flowerType?.bonus || 20} coins`, 'success');
+            } else {
+                showMessage('Flower watered! Growth increased', 'success');
+            }
+            
+            saveUserData();
+            renderGarden();
+            updateStats();
+        }
+
+        // Update stats
+        function updateStats() {
+            let totalPlanted = 0;
+            Object.values(gardenData.planets).forEach(planet => {
+                planet.slots.forEach(slot => {
+                    if (slot) totalPlanted++;
+                });
+            });
+            
+            document.getElementById('coins-count').textContent = gardenData.user.coins;
+            document.getElementById('planets-count').textContent = gardenData.user.ownedPlanets.length;
+            document.getElementById('flowers-count').textContent = totalPlanted;
+        }
+
+        // Show message
+        function showMessage(text, type) {
+            const container = document.getElementById('message-container');
+            const message = document.createElement('div');
+            message.className = `message ${type}`;
+            message.textContent = text;
+            container.appendChild(message);
+            
+            setTimeout(() => {
+                message.remove();
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

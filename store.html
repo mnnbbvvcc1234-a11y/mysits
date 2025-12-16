@@ -1,0 +1,1339 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galaxy StudyVerse - Planet & Flower Store</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --galaxy-purple: #8a2be2;
+            --galaxy-dark: #0f0f23;
+            --galaxy-blue: #1a1a3a;
+            --star-yellow: #ffd700;
+            --planet-green: #32cd32;
+            --flower-pink: #ff69b4;
+            --break-red: #ff4444;
+            --text-light: #f0f0f0;
+            --panel-bg: rgba(26, 26, 58, 0.9);
+            --shadow-glow: 0 0 15px rgba(138, 43, 226, 0.5);
+            --locked-color: #555;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--galaxy-dark);
+            background-image: 
+                radial-gradient(white 1px, transparent 1px),
+                radial-gradient(white 1px, transparent 1px);
+            background-size: 50px 50px, 80px 80px;
+            background-position: 0 0, 40px 40px;
+            color: var(--text-light);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding-bottom: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(to right, var(--galaxy-blue), var(--galaxy-purple));
+            padding: 20px 0;
+            box-shadow: var(--shadow-glow);
+            margin-bottom: 30px;
+            border-bottom: 2px solid var(--star-yellow);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo i {
+            font-size: 2.5rem;
+            color: var(--star-yellow);
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            background: linear-gradient(to right, #ffd700, #ff69b4);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+        }
+
+        .store-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--galaxy-purple);
+        }
+
+        .user-info {
+            display: flex;
+            gap: 25px;
+        }
+
+        .info-box {
+            background-color: var(--panel-bg);
+            padding: 12px 20px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid var(--galaxy-purple);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .info-box i {
+            color: var(--star-yellow);
+            font-size: 1.5rem;
+        }
+
+        .back-btn {
+            background-color: var(--galaxy-purple);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 30px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+            font-size: 1.1rem;
+        }
+
+        .back-btn:hover {
+            background-color: var(--star-yellow);
+            color: var(--galaxy-dark);
+            transform: translateY(-2px);
+        }
+
+        /* Store Tabs */
+        .store-tabs {
+            display: flex;
+            margin-bottom: 30px;
+            border-bottom: 2px solid var(--galaxy-purple);
+        }
+
+        .tab {
+            padding: 15px 30px;
+            background-color: transparent;
+            border: none;
+            color: var(--text-light);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .tab.active {
+            color: var(--star-yellow);
+            font-weight: bold;
+        }
+
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: var(--star-yellow);
+        }
+
+        .tab:hover:not(.active) {
+            color: var(--flower-pink);
+        }
+
+        /* Store Content */
+        .store-content {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        .store-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 25px;
+            color: var(--star-yellow);
+            font-size: 1.8rem;
+        }
+
+        .section-title i {
+            font-size: 2rem;
+        }
+
+        .category-title {
+            font-size: 1.5rem;
+            color: var(--flower-pink);
+            margin: 30px 0 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--galaxy-purple);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Items Grid */
+        .items-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        /* Planet Cards */
+        .planet-card {
+            background-color: var(--panel-bg);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: var(--shadow-glow);
+            border: 2px solid transparent;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .planet-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(138, 43, 226, 0.3);
+            border-color: var(--star-yellow);
+        }
+
+        .planet-card.locked {
+            opacity: 0.7;
+            filter: grayscale(0.5);
+        }
+
+        .planet-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-bottom: 3px solid var(--galaxy-purple);
+        }
+
+        .planet-info {
+            padding: 20px;
+        }
+
+        .planet-name {
+            font-size: 1.5rem;
+            color: var(--star-yellow);
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .planet-price {
+            background-color: rgba(255, 215, 0, 0.2);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 1rem;
+            color: var(--star-yellow);
+        }
+
+        .planet-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat i {
+            color: var(--planet-green);
+            margin-bottom: 5px;
+            font-size: 1.2rem;
+        }
+
+        .stat-value {
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: #aaa;
+        }
+
+        /* Buy Buttons */
+        .buy-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(to right, var(--planet-green), #2e8b57);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+        }
+
+        .buy-btn:hover {
+            background: linear-gradient(to right, #2e8b57, var(--planet-green));
+            box-shadow: 0 0 15px rgba(50, 205, 50, 0.7);
+        }
+
+        .buy-btn.owned {
+            background: linear-gradient(to right, #555, #777);
+            cursor: default;
+        }
+
+        .buy-btn.owned:hover {
+            background: linear-gradient(to right, #555, #777);
+            box-shadow: none;
+        }
+
+        .buy-btn.locked {
+            background: linear-gradient(to right, #777, #999);
+            cursor: not-allowed;
+        }
+
+        .locked-badge {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: var(--star-yellow);
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* Flower Cards */
+        .flower-card {
+            background-color: var(--panel-bg);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: var(--shadow-glow);
+            border: 2px solid transparent;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .flower-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(255, 105, 180, 0.3);
+            border-color: var(--flower-pink);
+        }
+
+        .flower-image-container {
+            width: 100%;
+            height: 180px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: rgba(0, 0, 0, 0.3);
+            border-bottom: 3px solid var(--galaxy-purple);
+            padding: 20px;
+            position: relative;
+        }
+
+        .flower-image {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            transition: filter 0.3s;
+        }
+
+        .flower-image.locked {
+            filter: blur(8px) brightness(0.5);
+        }
+
+        .flower-lock-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--star-yellow);
+            font-size: 3rem;
+            z-index: 2;
+        }
+
+        .flower-info {
+            padding: 20px;
+        }
+
+        .flower-name {
+            font-size: 1.3rem;
+            color: var(--flower-pink);
+            margin-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .flower-planet {
+            font-size: 0.9rem;
+            color: var(--star-yellow);
+            background-color: rgba(138, 43, 226, 0.2);
+            padding: 3px 10px;
+            border-radius: 15px;
+        }
+
+        .flower-description {
+            color: #ccc;
+            margin-bottom: 15px;
+            line-height: 1.4;
+            min-height: 60px;
+        }
+
+        .flower-price {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .flower-price-value {
+            font-size: 1.2rem;
+            color: var(--star-yellow);
+            font-weight: bold;
+        }
+
+        .flower-buy-btn {
+            width: 100%;
+            padding: 10px;
+            background: linear-gradient(to right, var(--flower-pink), #c71585);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+
+        .flower-buy-btn:hover {
+            background: linear-gradient(to right, #c71585, var(--flower-pink));
+            box-shadow: 0 0 15px rgba(255, 105, 180, 0.7);
+        }
+
+        .flower-buy-btn.owned {
+            background: linear-gradient(to right, #555, #777);
+            cursor: default;
+        }
+
+        .flower-buy-btn.owned:hover {
+            background: linear-gradient(to right, #555, #777);
+            box-shadow: none;
+        }
+
+        /* Background Stars */
+        .star {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 1; }
+        }
+
+        /* Messages */
+        .message {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 10px;
+            color: white;
+            font-weight: bold;
+            z-index: 1000;
+            animation: slideIn 0.5s, fadeOut 0.5s 2.5s;
+            animation-fill-mode: forwards;
+            max-width: 300px;
+        }
+
+        .message.success {
+            background-color: rgba(50, 205, 50, 0.9);
+            border-left: 5px solid var(--planet-green);
+        }
+
+        .message.warning {
+            background-color: rgba(255, 165, 0, 0.9);
+            border-left: 5px solid orange;
+        }
+
+        .message.error {
+            background-color: rgba(255, 68, 68, 0.9);
+            border-left: 5px solid var(--break-red);
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+
+        /* Effects */
+        .owned-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background-color: rgba(50, 205, 50, 0.8);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            z-index: 3;
+        }
+
+        /* Footer */
+        footer {
+            margin-top: 50px;
+            text-align: center;
+            padding: 20px;
+            color: #aaa;
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(138, 43, 226, 0.3);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .items-grid {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            }
+            
+            .store-header {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+            
+            .user-info {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .section-title {
+                font-size: 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .items-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .planet-name, .flower-name {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background Stars -->
+    <div id="stars-container"></div>
+
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-globe-americas"></i>
+                    <h1>Galaxy StudyVerse - Planet & Flower Store</h1>
+                </div>
+            </div>
+        </header>
+
+        <!-- User Info -->
+        <div class="store-header">
+            <div class="user-info">
+                <div class="info-box">
+                    <i class="fas fa-gem"></i>
+                    <span>Your Balance: <span id="user-coins">1250</span> coins</span>
+                </div>
+                <div class="info-box">
+                    <i class="fas fa-globe"></i>
+                    <span>Owned Planets: <span id="owned-planets">1</span>/6</span>
+                </div>
+                <div class="info-box">
+                    <i class="fas fa-seedling"></i>
+                    <span>Owned Flowers: <span id="owned-flowers">2</span>/18</span>
+                </div>
+            </div>
+            <button class="back-btn" id="back-to-main">
+                <i class="fas fa-arrow-left"></i>
+                Back to Main
+            </button>
+        </div>
+
+        <!-- Store Tabs -->
+        <div class="store-tabs">
+            <button class="tab active" data-tab="planets">
+                <i class="fas fa-globe"></i>
+                Planets
+            </button>
+            <button class="tab" data-tab="flowers">
+                <i class="fas fa-seedling"></i>
+                Flowers
+            </button>
+        </div>
+
+        <!-- Planets Section -->
+        <div id="planets-tab" class="store-content active">
+            <h2 class="section-title">
+                <i class="fas fa-globe-americas"></i>
+                Planet Store
+            </h2>
+            
+            <div class="category-title">
+                <i class="fas fa-rocket"></i>
+                Solar System Planets
+            </div>
+            
+            <div class="items-grid" id="planets-grid">
+                <!-- Will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Flowers Section -->
+        <div id="flowers-tab" class="store-content">
+            <h2 class="section-title">
+                <i class="fas fa-spa"></i>
+                Space Flower Store
+            </h2>
+            
+            <!-- Flower Filter by Planet -->
+            <div class="category-title">
+                <i class="fas fa-filter"></i>
+                Select a planet to view its flowers:
+                <select id="planet-filter" style="margin-left: 15px; padding: 5px 15px; background-color: var(--panel-bg); color: white; border: 1px solid var(--galaxy-purple); border-radius: 10px;">
+                    <option value="all">All Planets</option>
+                </select>
+            </div>
+            
+            <div class="items-grid" id="flowers-grid">
+                <!-- Will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer>
+            <!-- Footer text removed as requested -->
+        </footer>
+    </div>
+
+    <!-- Message Container -->
+    <div id="message-container"></div>
+
+    <script>
+        // Updated Store Data
+        const storeData = {
+            user: {
+                coins: 1250,
+                ownedPlanets: ["Earth"],
+                ownedFlowers: ["Terra Bloom", "Solar Bloom"]
+            },
+            
+            planets: [
+                {
+                    id: 1,
+                    name: "Earth",
+                    price: 50,
+                    image: "https://i.postimg.cc/7C2s5CRF/earth.jpg", // Updated Earth image
+                    stats: {
+                        flowerSlots: 6,
+                        difficulty: "Easy",
+                        bonus: "+10% extra points"
+                    },
+                    unlocked: true,
+                    owned: true
+                },
+                {
+                    id: 2,
+                    name: "Venus",
+                    price: 100,
+                    image: "https://i.postimg.cc/YjrSzQxP/venus.jpg",
+                    stats: {
+                        flowerSlots: 6,
+                        difficulty: "Medium",
+                        bonus: "+15% flower growth speed"
+                    },
+                    unlocked: false,
+                    owned: false
+                },
+                {
+                    id: 3,
+                    name: "Mars",
+                    price: 150,
+                    image: "https://i.postimg.cc/nXLGDsX4/mars.jpg",
+                    stats: {
+                        flowerSlots: 6,
+                        difficulty: "Medium",
+                        bonus: "+20% points for organized sessions"
+                    },
+                    unlocked: false,
+                    owned: false
+                },
+                {
+                    id: 4,
+                    name: "Saturn",
+                    price: 200,
+                    image: "https://i.postimg.cc/svgTpH8J/saturn.jpg",
+                    stats: {
+                        flowerSlots: 6,
+                        difficulty: "Hard",
+                        bonus: "+25% points for fast sessions"
+                    },
+                    unlocked: false,
+                    owned: false
+                },
+                {
+                    id: 5,
+                    name: "Mercury",
+                    price: 250,
+                    image: "https://i.postimg.cc/DSgftZ5T/mercury.jpg",
+                    stats: {
+                        flowerSlots: 6,
+                        difficulty: "Hard",
+                        bonus: "+30% points for long sessions"
+                    },
+                    unlocked: false,
+                    owned: false
+                },
+                {
+                    id: 6,
+                    name: "Neptune",
+                    price: 300,
+                    image: "https://i.postimg.cc/xXTqjMXq/neptune.jpg",
+                    stats: {
+                        flowerSlots: 6,
+                        difficulty: "Advanced",
+                        bonus: "+35% points for creative sessions"
+                    },
+                    unlocked: false,
+                    owned: false
+                }
+            ],
+            
+            flowers: [
+                // Earth Flowers - 3 flowers
+                {
+                    id: "earth-1",
+                    name: "Terra Bloom",
+                    planet: "Earth",
+                    price: 10,
+                    image: "https://i.postimg.cc/vDPbbkw0/flower4.jpg",
+                    description: "Beginning Flower - Grows with each study session you complete.",
+                    owned: true
+                },
+                {
+                    id: "earth-2",
+                    name: "Gaia Lily",
+                    planet: "Earth",
+                    price: 20,
+                    image: "https://i.postimg.cc/hhGRysQ9/flower5.jpg",
+                    description: "Balance Flower - Thrives when you maintain a balanced schedule.",
+                    owned: false
+                },
+                {
+                    id: "earth-3",
+                    name: "Root Fern",
+                    planet: "Earth",
+                    price: 30,
+                    image: "https://i.postimg.cc/LYJFxkxM/flower6.jpg",
+                    description: "Continuity Flower - Grows with your consistency in learning.",
+                    owned: false
+                },
+                
+                // Venus Flowers - 3 flowers
+                {
+                    id: "venus-1",
+                    name: "Heart Bloom",
+                    planet: "Venus",
+                    price: 15,
+                    image: "https://i.postimg.cc/vDPbbkw0/flower4.jpg",
+                    description: "Inspiration Flower - Blooms when you study with passion.",
+                    owned: false
+                },
+                {
+                    id: "venus-2",
+                    name: "Motivella",
+                    planet: "Venus",
+                    price: 25,
+                    image: "https://i.postimg.cc/hhGRysQ9/flower5.jpg",
+                    description: "Positive Energy Flower - Thrives with positive thinking.",
+                    owned: false
+                },
+                {
+                    id: "venus-3",
+                    name: "Petal Aura",
+                    planet: "Venus",
+                    price: 35,
+                    image: "https://i.postimg.cc/LYJFxkxM/flower6.jpg",
+                    description: "Success Flower - Grows with feelings of achievement.",
+                    owned: false
+                },
+                
+                // Mars Flowers - 3 flowers
+                {
+                    id: "mars-1",
+                    name: "Solar Bloom",
+                    planet: "Mars",
+                    price: 15,
+                    image: "https://i.postimg.cc/873MfZQS/flower2.jpg",
+                    description: "Energy Flower - Blooms with your most active sessions.",
+                    owned: true
+                },
+                {
+                    id: "mars-2",
+                    name: "Crater Rose",
+                    planet: "Mars",
+                    price: 25,
+                    image: "https://i.postimg.cc/vDPbbkw0/flower4.jpg",
+                    description: "Challenge Flower - Blooms when you overcome learning difficulties.",
+                    owned: false
+                },
+                {
+                    id: "mars-3",
+                    name: "Flare Vine",
+                    planet: "Mars",
+                    price: 35,
+                    image: "https://i.postimg.cc/hhGRysQ9/flower5.jpg",
+                    description: "Achievement Flower - Grows with each series of sessions you complete.",
+                    owned: false
+                },
+                
+                // Saturn Flowers - 3 flowers
+                {
+                    id: "saturn-1",
+                    name: "Ring Blossom",
+                    planet: "Saturn",
+                    price: 15,
+                    image: "https://i.postimg.cc/LYJFxkxM/flower6.jpg",
+                    description: "Organization Flower - Blooms when you follow an organized schedule.",
+                    owned: false
+                },
+                {
+                    id: "saturn-2",
+                    name: "Aura Fern",
+                    planet: "Saturn",
+                    price: 25,
+                    image: "https://i.postimg.cc/873MfZQS/flower2.jpg",
+                    description: "Clarity Flower - Thrives in deep focus sessions.",
+                    owned: false
+                },
+                {
+                    id: "saturn-3",
+                    name: "Golden Ivy",
+                    planet: "Saturn",
+                    price: 35,
+                    image: "https://i.postimg.cc/vDPbbkw0/flower4.jpg",
+                    description: "Creativity Flower - Grows with organized creative projects.",
+                    owned: false
+                },
+                
+                // Mercury Flowers - 3 flowers
+                {
+                    id: "mercury-1",
+                    name: "Flash Stem",
+                    planet: "Mercury",
+                    price: 25,
+                    image: "https://i.postimg.cc/hhGRysQ9/flower5.jpg",
+                    description: "Speed Flower - Grows with completing tasks quickly and efficiently.",
+                    owned: false
+                },
+                {
+                    id: "mercury-2",
+                    name: "Speed Ivy",
+                    planet: "Mercury",
+                    price: 35,
+                    image: "https://i.postimg.cc/LYJFxkxM/flower6.jpg",
+                    description: "Speed Plant - Thrives with fast and intensive study sessions.",
+                    owned: false
+                },
+                {
+                    id: "mercury-3",
+                    name: "Pulse Flower",
+                    planet: "Mercury",
+                    price: 45,
+                    image: "https://i.postimg.cc/873MfZQS/flower2.jpg",
+                    description: "Rhythm Flower - Blooms with continuous and regular focus.",
+                    owned: false
+                },
+                
+                // Neptune Flowers - 3 flowers
+                {
+                    id: "neptune-1",
+                    name: "Tide Lotus",
+                    planet: "Neptune",
+                    price: 15,
+                    image: "https://i.postimg.cc/vDPbbkw0/flower4.jpg",
+                    description: "Calm Flower - Grows in quiet and comfortable study environments.",
+                    owned: false
+                },
+                {
+                    id: "neptune-2",
+                    name: "Ocean Bloom",
+                    planet: "Neptune",
+                    price: 25,
+                    image: "https://i.postimg.cc/hhGRysQ9/flower5.jpg",
+                    description: "Meditation Flower - Thrives with meditative and deep study sessions.",
+                    owned: false
+                },
+                {
+                    id: "neptune-3",
+                    name: "Bubble Star",
+                    planet: "Neptune",
+                    price: 35,
+                    image: "https://i.postimg.cc/LYJFxkxM/flower6.jpg",
+                    description: "Balance Flower - Grows with balance between study and rest.",
+                    owned: false
+                }
+            ]
+        };
+
+        // Page Initialization
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize background stars
+            createStars();
+            
+            // Populate store with data
+            populatePlanetsStore();
+            populateFlowersStore();
+            populatePlanetFilter();
+            
+            // Set up event listeners
+            setupEventListeners();
+            
+            // Update UI
+            updateUI();
+        });
+
+        // Create Background Stars
+        function createStars() {
+            const starsContainer = document.getElementById('stars-container');
+            for (let i = 0; i < 100; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
+                star.style.width = star.style.height = Math.random() * 3 + 1 + 'px';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 5 + 's';
+                starsContainer.appendChild(star);
+            }
+        }
+
+        // Set Up Event Listeners
+        function setupEventListeners() {
+            // Switch between tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // Remove active from all tabs
+                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.store-content').forEach(c => c.classList.remove('active'));
+                    
+                    // Activate selected tab
+                    this.classList.add('active');
+                    const tabId = this.dataset.tab;
+                    document.getElementById(`${tabId}-tab`).classList.add('active');
+                });
+            });
+            
+            // Back to main button
+            document.getElementById('back-to-main').addEventListener('click', function() {
+                showMessage('Returning to main page...', 'success');
+                // In a real application, redirect to main page
+                setTimeout(() => {
+                    alert('You will be redirected to the main page in the full application');
+                }, 1000);
+            });
+            
+            // Flower filter by planet
+            document.getElementById('planet-filter').addEventListener('change', function() {
+                populateFlowersStore(this.value);
+            });
+        }
+
+        // Populate Planets Store
+        function populatePlanetsStore() {
+            const planetsGrid = document.getElementById('planets-grid');
+            planetsGrid.innerHTML = '';
+            
+            storeData.planets.forEach(planet => {
+                const isOwned = storeData.user.ownedPlanets.includes(planet.name);
+                const isLocked = !planet.unlocked && !isOwned;
+                
+                const planetCard = document.createElement('div');
+                planetCard.className = `planet-card ${isLocked ? 'locked' : ''}`;
+                
+                let buttonHtml = '';
+                if (isOwned) {
+                    buttonHtml = `<button class="buy-btn owned" disabled>
+                        <i class="fas fa-check-circle"></i>
+                        Owned
+                    </button>`;
+                } else if (isLocked) {
+                    buttonHtml = `<button class="buy-btn locked" disabled>
+                        <i class="fas fa-lock"></i>
+                        Locked
+                    </button>`;
+                } else {
+                    buttonHtml = `<button class="buy-btn" data-planet-id="${planet.id}">
+                        <i class="fas fa-shopping-cart"></i>
+                        Buy (${planet.price} coins)
+                    </button>`;
+                }
+                
+                planetCard.innerHTML = `
+                    ${isLocked ? `
+                        <div class="locked-badge">
+                            <i class="fas fa-lock"></i>
+                            Locked
+                        </div>
+                    ` : ''}
+                    
+                    ${isOwned ? `
+                        <div class="owned-badge">
+                            <i class="fas fa-crown"></i>
+                            Owned
+                        </div>
+                    ` : ''}
+                    
+                    <img src="${planet.image}" alt="${planet.name}" class="planet-image">
+                    <div class="planet-info">
+                        <div class="planet-name">
+                            <span>${planet.name}</span>
+                            <span class="planet-price">${planet.price} coins</span>
+                        </div>
+                        
+                        <div class="planet-stats">
+                            <div class="stat">
+                                <i class="fas fa-seedling"></i>
+                                <div class="stat-value">${planet.stats.flowerSlots}</div>
+                                <div class="stat-label">Flower Slots</div>
+                            </div>
+                            <div class="stat">
+                                <i class="fas fa-chart-line"></i>
+                                <div class="stat-value">${planet.stats.difficulty}</div>
+                                <div class="stat-label">Difficulty</div>
+                            </div>
+                            <div class="stat">
+                                <i class="fas fa-gem"></i>
+                                <div class="stat-value">${planet.stats.bonus}</div>
+                                <div class="stat-label">Bonus</div>
+                            </div>
+                        </div>
+                        
+                        ${buttonHtml}
+                    </div>
+                `;
+                
+                // Add event listener to button if not owned or locked
+                if (!isOwned && !isLocked) {
+                    const buyBtn = planetCard.querySelector('.buy-btn');
+                    buyBtn.addEventListener('click', () => buyPlanet(planet.id));
+                }
+                
+                planetsGrid.appendChild(planetCard);
+            });
+        }
+
+        // Populate Flowers Store
+        function populateFlowersStore(filterPlanet = 'all') {
+            const flowersGrid = document.getElementById('flowers-grid');
+            flowersGrid.innerHTML = '';
+            
+            // Filter flowers by selected planet
+            let filteredFlowers = storeData.flowers;
+            if (filterPlanet !== 'all') {
+                filteredFlowers = storeData.flowers.filter(flower => flower.planet === filterPlanet);
+            }
+            
+            // If no flowers for selected planet
+            if (filteredFlowers.length === 0) {
+                flowersGrid.innerHTML = `
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #aaa;">
+                        <i class="fas fa-seedling" style="font-size: 3rem; margin-bottom: 20px; display: block;"></i>
+                        <h3>No flowers available for this planet yet</h3>
+                        <p>You need to own the planet first to see its available flowers</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Display filtered flowers
+            filteredFlowers.forEach(flower => {
+                const isOwned = storeData.user.ownedFlowers.includes(flower.name);
+                const planetOwned = storeData.user.ownedPlanets.includes(flower.planet);
+                
+                const flowerCard = document.createElement('div');
+                flowerCard.className = 'flower-card';
+                
+                let buttonHtml = '';
+                if (isOwned) {
+                    buttonHtml = `<button class="flower-buy-btn owned" disabled>
+                        <i class="fas fa-check-circle"></i>
+                        Owned
+                    </button>`;
+                } else if (!planetOwned) {
+                    buttonHtml = `<button class="flower-buy-btn locked" disabled>
+                        <i class="fas fa-globe"></i>
+                        Buy Planet First
+                    </button>`;
+                } else {
+                    buttonHtml = `<button class="flower-buy-btn" data-flower-id="${flower.id}">
+                        <i class="fas fa-shopping-cart"></i>
+                        Buy (${flower.price} coins)
+                    </button>`;
+                }
+                
+                flowerCard.innerHTML = `
+                    ${isOwned ? `
+                        <div class="owned-badge">
+                            <i class="fas fa-leaf"></i>
+                            Owned
+                        </div>
+                    ` : ''}
+                    
+                    <div class="flower-image-container">
+                        <img src="${flower.image}" alt="${flower.name}" class="flower-image ${!isOwned ? 'locked' : ''}">
+                        ${!isOwned ? `
+                            <div class="flower-lock-overlay">
+                                <i class="fas fa-lock"></i>
+                            </div>
+                        ` : ''}
+                    </div>
+                    <div class="flower-info">
+                        <div class="flower-name">
+                            <span>${flower.name}</span>
+                            <span class="flower-planet">${flower.planet}</span>
+                        </div>
+                        <p class="flower-description">${flower.description}</p>
+                        
+                        <div class="flower-price">
+                            <span class="flower-price-value">${flower.price} coins</span>
+                            ${!isOwned && planetOwned ? `
+                                <span style="color: #aaa; font-size: 0.9rem;">${getFlowerGrowthTime(flower.price)} min growth</span>
+                            ` : ''}
+                        </div>
+                        
+                        ${buttonHtml}
+                    </div>
+                `;
+                
+                // Add event listener to button if not owned and planet is owned
+                if (!isOwned && planetOwned) {
+                    const buyBtn = flowerCard.querySelector('.flower-buy-btn');
+                    buyBtn.addEventListener('click', () => buyFlower(flower.id));
+                }
+                
+                flowersGrid.appendChild(flowerCard);
+            });
+        }
+
+        // Populate Planet Filter
+        function populatePlanetFilter() {
+            const planetFilter = document.getElementById('planet-filter');
+            
+            // Add owned planets only
+            storeData.user.ownedPlanets.forEach(planetName => {
+                const option = document.createElement('option');
+                option.value = planetName;
+                option.textContent = planetName;
+                planetFilter.appendChild(option);
+            });
+        }
+
+        // Buy Planet
+        function buyPlanet(planetId) {
+            const planet = storeData.planets.find(p => p.id === planetId);
+            
+            if (!planet) {
+                showMessage('Planet not found!', 'error');
+                return;
+            }
+            
+            // Check if planet is not already owned
+            if (storeData.user.ownedPlanets.includes(planet.name)) {
+                showMessage('You already own this planet!', 'warning');
+                return;
+            }
+            
+            // Check if user has enough coins
+            if (storeData.user.coins < planet.price) {
+                showMessage(`Insufficient balance! You need ${planet.price - storeData.user.coins} more coins`, 'error');
+                return;
+            }
+            
+            // Confirm purchase
+            if (!confirm(`Do you want to buy planet ${planet.name} for ${planet.price} coins?`)) {
+                return;
+            }
+            
+            // Deduct price and add planet to owned
+            storeData.user.coins -= planet.price;
+            storeData.user.ownedPlanets.push(planet.name);
+            
+            // Update planet in original data
+            const planetIndex = storeData.planets.findIndex(p => p.id === planetId);
+            storeData.planets[planetIndex].owned = true;
+            storeData.planets[planetIndex].unlocked = true;
+            
+            // Update UI
+            updateUI();
+            populatePlanetsStore();
+            populatePlanetFilter();
+            
+            // Show success message
+            showMessage(`Congratulations! You bought planet ${planet.name}`, 'success');
+            
+            // Save data (in real app, send to server)
+            saveUserData();
+        }
+
+        // Buy Flower
+        function buyFlower(flowerId) {
+            const flower = storeData.flowers.find(f => f.id === flowerId);
+            
+            if (!flower) {
+                showMessage('Flower not found!', 'error');
+                return;
+            }
+            
+            // Check if flower is not already owned
+            if (storeData.user.ownedFlowers.includes(flower.name)) {
+                showMessage('You already own this flower!', 'warning');
+                return;
+            }
+            
+            // Check if user owns the planet
+            if (!storeData.user.ownedPlanets.includes(flower.planet)) {
+                showMessage('You must own the planet first to buy its flowers!', 'error');
+                return;
+            }
+            
+            // Check if user has enough coins
+            if (storeData.user.coins < flower.price) {
+                showMessage(`Insufficient balance! You need ${flower.price - storeData.user.coins} more coins`, 'error');
+                return;
+            }
+            
+            // Confirm purchase
+            if (!confirm(`Do you want to buy flower ${flower.name} for ${flower.price} coins?`)) {
+                return;
+            }
+            
+            // Deduct price and add flower to owned
+            storeData.user.coins -= flower.price;
+            storeData.user.ownedFlowers.push(flower.name);
+            
+            // Update UI
+            updateUI();
+            populateFlowersStore(document.getElementById('planet-filter').value);
+            
+            // Show success message
+            showMessage(`Congratulations! You bought flower ${flower.name}`, 'success');
+            
+            // Save data (in real app, send to server)
+            saveUserData();
+        }
+
+        // Update UI
+        function updateUI() {
+            document.getElementById('user-coins').textContent = storeData.user.coins;
+            document.getElementById('owned-planets').textContent = storeData.user.ownedPlanets.length;
+            document.getElementById('owned-flowers').textContent = storeData.user.ownedFlowers.length;
+        }
+
+        // Get flower growth time based on price
+        function getFlowerGrowthTime(price) {
+            if (price <= 15) return 60; // 1 hour
+            if (price <= 25) return 120; // 2 hours
+            if (price <= 35) return 180; // 3 hours
+            return 240; // 4 hours
+        }
+
+        // Show Message
+        function showMessage(text, type) {
+            const messageContainer = document.getElementById('message-container');
+            
+            const message = document.createElement('div');
+            message.className = `message ${type}`;
+            message.textContent = text;
+            
+            messageContainer.appendChild(message);
+            
+            // Remove message after 3 seconds
+            setTimeout(() => {
+                message.remove();
+            }, 3000);
+        }
+
+        // Save User Data (simulation)
+        function saveUserData() {
+            console.log('User data saved:', storeData.user);
+            // In a real application, send data to server or save to localStorage
+            localStorage.setItem('galaxyStoreUserData', JSON.stringify(storeData.user));
+        }
+    </script>
+</body>
+</html>

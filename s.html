@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Scheduler</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #040d35;
+            --bg-card: #6a7092;
+            --primary: #3e0a92;
+            --primary-hover: #5b21b6;
+            --text-main: #e2e8f0;
+            --text-muted: #092246;
+            --border-color: #2a044e;
+        }
+      body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #2a044e;
+            color: var(--dark);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.1) 0%, transparent 25%),
+                radial-gradient(circle at 90% 80%, rgba(236, 72, 153, 0.1) 0%, transparent 25%),
+                radial-gradient(circle at 50% 50%, rgba(6, 182, 212, 0.08) 0%, transparent 40%);
+            position: relative;
+            overflow-x: hidden;
+        }
+
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-dark);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #4b5563;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #6b7280;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Upload Area */
+        .upload-area {
+            background-color: var(--bg-card);
+            border: 2px dashed #4b5563;
+            border-radius: 1rem;
+            padding: 4rem 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            max-width: 600px;
+            margin: 10vh auto;
+        }
+
+        .upload-area:hover {
+            border-color: var(--primary);
+            background-color: rgba(109, 40, 217, 0.1);
+        }
+
+        /* Course List */
+        .course-item {
+            display: grid;
+            grid-template-columns: 1fr auto auto auto;
+            gap: 1rem;
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            align-items: center;
+            transition: background 0.2s;
+        }
+
+        .course-item:hover {
+            background-color: rgba(255,255,255,0.02);
+        }
+
+        /* Schedule Table */
+        .schedule-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            background-color: var(--bg-card);
+            border-radius: 0.5rem;
+            overflow: hidden;
+            table-layout: fixed;
+        }
+
+        .schedule-table th, .schedule-table td {
+            padding: 0.75rem;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            height: 60px;
+            vertical-align: top;
+        }
+
+        .schedule-table th {
+            background-color: #2d2f40;
+            color: var(--text-muted);
+            font-weight: 500;
+            height: auto;
+        }
+
+        .event-card {
+            background-color: rgba(109, 40, 217, 0.2);
+            border-left: 3px solid var(--primary);
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            text-align: left;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 50;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-content {
+            background: var(--bg-card);
+            padding: 2rem;
+            border-radius: 1rem;
+            width: 90%;
+            max-width: 600px;
+            border: 1px solid var(--border-color);
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .custom-checkbox {
+            accent-color: var(--primary);
+            width: 1.2rem;
+            height: 1.2rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- View 1: Upload -->
+    <div id="uploadView" class="container">
+        <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+            <svg class="w-16 h-16 mx-auto mb-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+            </svg>
+            <h2 class="text-2xl font-bold mb-2">Upload Schedule HTML</h2>
+            <p class="text-gray-400 mb-6">Drag & drop your university schedule HTML file here</p>
+            <button class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg font-medium transition">
+                Browse Files
+            </button>
+            <input type="file" id="fileInput" accept=".html,.htm,.txt" style="display: none;">
+        </div>
+    </div>
+
+    <!-- View 2: Main App -->
+    <div id="appView" class="container hidden">
+        
+        <!-- Header -->
+        <div class="flex justify-between items-center mb-8">
+            <h1 class="text-2xl font-bold text-purple-400">Smart Scheduler</h1>
+            <button onclick="location.reload()" class="text-sm text-gray-400 hover:text-white">Start Over</button>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <!-- Left Panel: Course Management -->
+            <div class="lg:col-span-1 space-y-6">
+                
+                <!-- Add Course Form -->
+                <div class="bg-gray-800/50 p-6 rounded-xl border border-gray-700">
+                    <h3 class="text-lg font-semibold mb-4">Add Course</h3>
+                    <div class="flex items-end gap-2 mb-4">
+                        <div class="w-24">
+                            <label class="block text-[10px] text-gray-500 mb-1 uppercase tracking-wider">Code</label>
+                            <input type="text" id="inputCode" class="w-full bg-gray-900 border border-gray-700 rounded p-2 text-white focus:border-purple-500 outline-none uppercase text-sm" placeholder="CS">
+                        </div>
+                        <div class="w-24">
+                            <label class="block text-[10px] text-gray-500 mb-1 uppercase tracking-wider">Number</label>
+                            <input type="text" id="inputNumber" class="w-full bg-gray-900 border border-gray-700 rounded p-2 text-white focus:border-purple-500 outline-none text-sm" placeholder="111">
+                        </div>
+                        <div class="flex-1">
+                            <label class="block text-[10px] text-gray-500 mb-1 uppercase tracking-wider">Section (Opt)</label>
+                            <input type="text" id="inputSection" class="w-full bg-gray-900 border border-gray-700 rounded p-2 text-white focus:border-purple-500 outline-none text-sm" placeholder="YF1">
+                        </div>
+                        <button onclick="app.addCourse()" class="bg-purple-600 hover:bg-purple-700 text-white rounded w-10 h-[38px] flex items-center justify-center text-xl font-bold flex-shrink-0 transition-colors mb-[1px]">+</button>
+                    </div>
+                    <p class="text-xs text-gray-500">* Enter course code and number exactly as in your file.</p>
+                </div>
+
+                <!-- Added Courses List -->
+                <div class="bg-gray-800/50 rounded-xl border border-gray-700 overflow-hidden min-h-[300px]">
+                    <div class="p-4 border-b border-gray-700 flex justify-between items-center">
+                        <h3 class="text-lg font-semibold">Selected Courses</h3>
+                        <span id="courseCount" class="text-xs bg-gray-700 px-2 py-1 rounded text-gray-300">0</span>
+                    </div>
+                    <div id="addedCoursesList" class="max-h-[400px] overflow-y-auto">
+                        <div class="text-center text-gray-500 py-8">No courses added yet</div>
+                    </div>
+                </div>
+
+                <!-- Generate Button -->
+                <button onclick="app.generateSchedules()" class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white py-3 rounded-xl font-bold text-lg shadow-lg transition transform hover:scale-[1.02]">
+                    Generate Schedules
+                </button>
+
+                <!-- Advanced Options -->
+                <div class="bg-gray-800/30 p-4 rounded-xl border border-gray-700/50">
+                    <button onclick="document.getElementById('advancedOptions').classList.toggle('hidden')" class="flex justify-between items-center w-full text-sm text-gray-400 hover:text-white">
+                        <span>Advanced Options</span>
+                        <span>▼</span>
+                    </button>
+                    <div id="advancedOptions" class="hidden mt-4 space-y-3">
+                        <label class="flex items-center gap-2 text-sm text-gray-300 cursor-pointer">
+                            <input type="checkbox" id="showUnavailable" class="custom-checkbox">
+                            <span>Include full/closed sections</span>
+                        </label>
+                        <div class="pt-2 border-t border-gray-700">
+                            <label class="block text-xs text-gray-500 mb-1">Filter: Free Days</label>
+                            <select id="filterDays" onchange="app.applyFilters()" class="w-full bg-gray-900 border border-gray-700 rounded p-2 text-sm text-white outline-none">
+                                <option value="all">Show All</option>
+                                <option value="off_days">At least 1 day off</option>
+                                <option value="sun_off">Sunday Off</option>
+                                <option value="mon_off">Monday Off</option>
+                                <option value="tue_off">Tuesday Off</option>
+                                <option value="wed_off">Wednesday Off</option>
+                                <option value="thu_off">Thursday Off</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel: Results -->
+            <div class="lg:col-span-2 flex flex-col h-full">
+                
+                <!-- Results Toolbar -->
+                <div id="resultsToolbar" class="hidden bg-gray-800/50 p-4 rounded-xl border border-gray-700 mb-4 flex flex-wrap justify-between items-center gap-4">
+                    <div class="flex items-center gap-4">
+                        <button onclick="app.prevSchedule()" class="bg-gray-700 hover:bg-gray-600 text-white w-8 h-8 rounded-full flex items-center justify-center">&lt;</button>
+                        <span id="scheduleCounter" class="font-mono font-bold text-purple-400">0 / 0</span>
+                        <button onclick="app.nextSchedule()" class="bg-gray-700 hover:bg-gray-600 text-white w-8 h-8 rounded-full flex items-center justify-center">&gt;</button>
+                    </div>
+                    
+                    <div class="flex gap-2">
+                        <button onclick="app.saveSchedule()" class="bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded text-sm flex items-center gap-1">
+                            <span>💾</span> Save
+                        </button>
+                        <button onclick="app.exportImage()" class="bg-gray-700 hover:bg-gray-600 text-white px-3 py-1.5 rounded text-sm flex items-center gap-1">
+                            <span>📷</span> PNG
+                        </button>
+                        <button onclick="app.exportPDF()" class="bg-gray-700 hover:bg-gray-600 text-white px-3 py-1.5 rounded text-sm flex items-center gap-1">
+                            <span>📄</span> PDF
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Schedule Container -->
+                <div id="scheduleContainer" class="bg-white text-black rounded-xl overflow-hidden shadow-2xl flex-1 min-h-[500px] relative">
+                    <div class="absolute inset-0 flex items-center justify-center text-gray-400 bg-gray-900">
+                        <div class="text-center">
+                            <div class="text-6xl mb-4">📅</div>
+                            <p>Add courses and click Generate to see schedules</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Saved Schedules (Bottom) -->
+                <div id="savedSection" class="mt-8 hidden">
+                    <h3 class="text-lg font-semibold mb-4 text-gray-400">Saved Schedules</h3>
+                    <div id="savedSchedulesList" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Saved items -->
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Section Selection Modal -->
+    <div id="sectionModal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-6 border-b border-gray-700 pb-4">
+                <div>
+                    <h3 class="text-xl font-bold text-white" id="modalCourseTitle">Course Sections</h3>
+                    <p class="text-sm text-gray-400">Uncheck sections you don't want to include</p>
+                </div>
+                <button onclick="app.closeModal()" class="text-gray-400 hover:text-white text-2xl">&times;</button>
+            </div>
+            
+            <div class="flex-1 overflow-y-auto mb-6 custom-scrollbar">
+                <div id="modalSectionsList" class="space-y-2">
+                    <!-- Checkboxes injected here -->
+                </div>
+            </div>
+
+            <div class="flex justify-end gap-3 pt-4 border-t border-gray-700">
+                <button onclick="app.toggleAllSections(true)" class="px-4 py-2 text-sm text-purple-400 hover:text-purple-300 mr-auto">Select All</button>
+                <button onclick="app.toggleAllSections(false)" class="px-4 py-2 text-sm text-gray-400 hover:text-gray-300 mr-4">Deselect All</button>
+                <button onclick="app.closeModal()" class="px-6 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg">Cancel</button>
+                <button onclick="app.saveSectionSelection()" class="px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-medium">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const app = {
+            allData: [],
+            selectedCourses: [],
+            generatedSchedules: [],
+            filteredSchedules: [],
+            currentScheduleIndex: 0,
+            editingCourseId: null,
+
+            init() {
+                document.getElementById('fileInput').addEventListener('change', (e) => {
+                    if (e.target.files.length > 0) this.processFile(e.target.files[0]);
+                });
+                this.loadSavedSchedules();
+            },
+
+            async processFile(file) {
+                try {
+                    const text = await file.text();
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(text, 'text/html');
+                    this.allData = this.extractData(doc);
+                    
+                    if (this.allData.length > 0) {
+                        document.getElementById('uploadView').classList.add('hidden');
+                        document.getElementById('appView').classList.remove('hidden');
+                    } else {
+                        alert('No courses found. Please ensure you uploaded the correct HTML file.');
+                    }
+                } catch (err) {
+                    console.error(err);
+                    alert('Error reading file.');
+                }
+            },
+
+            extractData(doc) {
+                const courses = [];
+                const rows = doc.querySelectorAll('tr');
+                
+                rows.forEach((row, index) => {
+                    const cells = row.querySelectorAll('td');
+                    // Based on pasted_content_3.txt, the row has 14 cells (indices 0-13)
+                    // [0] Registered (0)
+                    // [1] Available (35)
+                    // [2] Thu (Time)
+                    // [3] Wed (Time)
+                    // [4] Tue (Time)
+                    // [5] Mon (Time)
+                    // [6] Sun (Time)
+                    // [7] Instructor
+                    // [8] Section (YF4)
+                    // [9] Name (أساسيات الذكاء الاصطناعي)
+                    // [10] Number (113)
+                    // [11] Code (AI)
+                    // [12] Branch (ينبع)
+                    // [13] ID (1)
+
+                    if (cells.length < 12) return;
+
+                    const getTxt = (i) => cells[i] ? cells[i].innerText.trim() : '';
+                    
+                    // RTL Structure Mapping
+                    const code = getTxt(11);
+                    const number = getTxt(10);
+                    const section = getTxt(8);
+                    const name = getTxt(9);
+                    const instructor = getTxt(7);
+
+                    // Validation
+                    if (!/^[A-Z0-9]{2,5}$/.test(code) || !/^\d{3}$/.test(number)) {
+                        return; // Skip invalid rows
+                    }
+
+                    // Times Mapping (Indices 2-6)
+                    // [2] Thu, [3] Wed, [4] Tue, [5] Mon, [6] Sun
+                    const times = {};
+                    const timeMap = {
+                        'Thu': 2,
+                        'Wed': 3,
+                        'Tue': 4,
+                        'Mon': 5,
+                        'Sun': 6
+                    };
+
+                    Object.entries(timeMap).forEach(([day, idx]) => {
+                        let t = getTxt(idx);
+                        // Clean up: remove '-' if it's just a dash, remove spaces
+                        t = t.replace(/\s/g, '');
+                        if (t && t.length > 3 && t !== '-') {
+                            times[day] = t;
+                        }
+                    });
+
+                    courses.push({
+                        id: index,
+                        code,
+                        number,
+                        section,
+                        name,
+                        instructor,
+                        times,
+                        fullCode: `${code}${number}`
+                    });
+                });
+
+                return courses;
+            },
+
+            addCourse() {
+                const codeInput = document.getElementById('inputCode');
+                const numInput = document.getElementById('inputNumber');
+                const secInput = document.getElementById('inputSection');
+                
+                const code = codeInput.value.toUpperCase().trim();
+                const number = numInput.value.trim();
+                const section = secInput.value.trim();
+
+                if (!code || !number) {
+                    alert('Please enter both Course Code and Number.');
+                    return;
+                }
+
+                // Search in data
+                let matches = this.allData.filter(c => c.code === code && c.number === number);
+                
+                if (matches.length === 0) {
+                    alert(`Course ${code} ${number} not found in the uploaded file.`);
+                    return;
+                }
+
+                // If section is provided, filter by it
+                if (section) {
+                    const sectionMatch = matches.filter(c => c.section === section);
+                    if (sectionMatch.length === 0) {
+                        alert(`Section ${section} not found for course ${code} ${number}. Adding all sections instead.`);
+                    } else {
+                        // If specific section found, we still add the course but only activate that section
+                        // However, the user might want to add multiple specific sections later.
+                        // For now, let's just default the activeSections to this one.
+                    }
+                }
+
+                if (this.selectedCourses.some(c => c.code === code && c.number === number)) {
+                    alert('Course already added.');
+                    return;
+                }
+
+                // Determine initial active sections
+                let initialActive = matches.map(m => m.section);
+                if (section) {
+                    const specific = matches.find(c => c.section === section);
+                    if (specific) {
+                        initialActive = [specific.section];
+                    }
+                }
+
+                this.selectedCourses.push({
+                    id: Date.now(),
+                    code,
+                    number,
+                    name: matches[0].name,
+                    availableSections: matches,
+                    activeSections: initialActive
+                });
+
+                this.renderCourseList();
+                codeInput.value = '';
+                numInput.value = '';
+                secInput.value = '';
+                codeInput.focus();
+            },
+
+            removeCourse(id) {
+                this.selectedCourses = this.selectedCourses.filter(c => c.id !== id);
+                this.renderCourseList();
+            },
+
+            renderCourseList() {
+                const container = document.getElementById('addedCoursesList');
+                const countBadge = document.getElementById('courseCount');
+                
+                countBadge.innerText = this.selectedCourses.length;
+
+                if (this.selectedCourses.length === 0) {
+                    container.innerHTML = '<div class="text-center text-gray-500 py-8">No courses added yet</div>';
+                    return;
+                }
+
+                container.innerHTML = this.selectedCourses.map(course => `
+                    <div class="course-item hover:bg-gray-700/30 transition rounded-lg">
+                        <div>
+                            <div class="font-bold text-white">${course.code} ${course.number}</div>
+                            <div class="text-xs text-gray-400 truncate">${course.name}</div>
+                        </div>
+                        <div class="text-sm text-gray-300">
+                            ${course.activeSections.length} / ${course.availableSections.length} Sections
+                        </div>
+                        <button onclick="app.openSectionModal(${course.id})" class="text-purple-400 hover:text-purple-300 p-2" title="Edit Sections">
+                            ✏️
+                        </button>
+                        <button onclick="app.removeCourse(${course.id})" class="text-red-400 hover:text-red-300 p-2" title="Remove">
+                            ✕
+                        </button>
+                    </div>
+                `).join('');
+            },
+
+            openSectionModal(courseId) {
+                const course = this.selectedCourses.find(c => c.id === courseId);
+                if (!course) return;
+
+                this.editingCourseId = courseId;
+                document.getElementById('modalCourseTitle').innerText = `${course.code} ${course.number} Sections`;
+                
+                const list = document.getElementById('modalSectionsList');
+                list.innerHTML = course.availableSections.map(sec => `
+                    <label class="flex items-center gap-3 p-3 bg-gray-800/50 hover:bg-gray-700 rounded-lg cursor-pointer border border-gray-700">
+                        <input type="checkbox" class="custom-checkbox" 
+                            value="${sec.section}" 
+                            ${course.activeSections.includes(sec.section) ? 'checked' : ''}>
+                        <div class="flex-1">
+                            <div class="flex justify-between">
+                                <span class="font-mono font-bold text-white">${sec.section}</span>
+                                <span class="text-xs text-gray-400">${sec.instructor || 'Unknown'}</span>
+                            </div>
+                            <div class="text-xs text-gray-500 mt-1">
+                                ${this.formatTimes(sec.times)}
+                            </div>
+                        </div>
+                    </label>
+                `).join('');
+
+                document.getElementById('sectionModal').classList.remove('hidden');
+            },
+
+            formatTimes(times) {
+                if (!times) return '';
+                return Object.entries(times)
+                    .filter(([_, t]) => t)
+                    .map(([d, t]) => `${d}: ${t}`)
+                    .join(' | ');
+            },
+
+            toggleAllSections(select) {
+                const checkboxes = document.querySelectorAll('#modalSectionsList input[type="checkbox"]');
+                checkboxes.forEach(cb => cb.checked = select);
+            },
+
+            saveSectionSelection() {
+                const checkboxes = document.querySelectorAll('#modalSectionsList input[type="checkbox"]');
+                const selected = Array.from(checkboxes).filter(cb => cb.checked).map(cb => cb.value);
+                
+                const course = this.selectedCourses.find(c => c.id === this.editingCourseId);
+                if (course) {
+                    course.activeSections = selected;
+                    this.renderCourseList();
+                }
+                this.closeModal();
+            },
+
+            closeModal() {
+                document.getElementById('sectionModal').classList.add('hidden');
+                this.editingCourseId = null;
+            },
+
+            generateSchedules() {
+                if (this.selectedCourses.length === 0) {
+                    alert('Please add at least one course.');
+                    return;
+                }
+
+                // Prepare data for Cartesian product
+                const coursesToCombine = this.selectedCourses.map(c => {
+                    return c.availableSections.filter(sec => c.activeSections.includes(sec.section));
+                });
+
+                if (coursesToCombine.some(arr => arr.length === 0)) {
+                    alert('One or more courses have no sections selected. Please select at least one section per course.');
+                    return;
+                }
+
+                // Generate combinations
+                const combos = this.cartesian(coursesToCombine);
+                
+                // Filter conflicts
+                const validSchedules = combos.filter(schedule => !this.hasConflict(schedule));
+
+                this.generatedSchedules = validSchedules;
+                this.applyFilters(); // This will also render
+                
+                if (validSchedules.length === 0) {
+                    alert('No conflict-free schedules found. Try selecting more sections.');
+                } else {
+                    document.getElementById('resultsToolbar').classList.remove('hidden');
+                    document.getElementById('scheduleContainer').scrollIntoView({ behavior: 'smooth' });
+                }
+            },
+
+            cartesian(args) {
+                const r = [], max = args.length-1;
+                function helper(arr, i) {
+                    for (let j=0, l=args[i].length; j<l; j++) {
+                        const a = arr.slice(0);
+                        a.push(args[i][j]);
+                        if (i==max) r.push(a);
+                        else helper(a, i+1);
+                    }
+                }
+                helper([], 0);
+                return r;
+            },
+
+            parseTime(timeStr) {
+                if (!timeStr || !timeStr.includes('-')) return null;
+                const [start, end] = timeStr.split('-').map(t => {
+                    const [h, m] = t.trim().split(':').map(Number);
+                    return h * 60 + m;
+                });
+                return { start, end };
+            },
+
+            hasConflict(schedule) {
+                const slots = [];
+                // Check for duplicate courses (same code+number)
+                const courseIds = schedule.map(c => c.fullCode);
+                if (new Set(courseIds).size !== courseIds.length) return true;
+
+                for (const course of schedule) {
+                    if (!course.times) continue;
+                    for (const [day, timeStr] of Object.entries(course.times)) {
+                        if (!timeStr) continue;
+                        const time = this.parseTime(timeStr);
+                        if (time) {
+                            slots.push({ 
+                                day, 
+                                start: time.start, 
+                                end: time.end, 
+                                course: course.fullCode 
+                            });
+                        }
+                    }
+                }
+
+                for (let i = 0; i < slots.length; i++) {
+                    for (let j = i + 1; j < slots.length; j++) {
+                        // Same day check
+                        if (slots[i].day === slots[j].day) {
+                            // Minute-level overlap check
+                            // Overlap exists if (StartA < EndB) and (EndA > StartB)
+                            if (slots[i].start < slots[j].end && slots[i].end > slots[j].start) {
+                                return true;
+                            }
+                        }
+                    }
+                }
+                return false;
+            },
+
+            applyFilters() {
+                const filterType = document.getElementById('filterDays').value;
+                
+                let filtered = this.generatedSchedules;
+
+                if (filterType !== 'all') {
+                    filtered = filtered.filter(schedule => {
+                        const daysWithClasses = new Set();
+                        schedule.forEach(c => {
+                            if(c.times) Object.keys(c.times).forEach(d => daysWithClasses.add(d));
+                        });
+
+                        if (filterType === 'off_days') return daysWithClasses.size < 5; // Assuming 5 day week
+                        if (filterType === 'sun_off') return !daysWithClasses.has('Sun');
+                        if (filterType === 'mon_off') return !daysWithClasses.has('Mon');
+                        if (filterType === 'tue_off') return !daysWithClasses.has('Tue');
+                        if (filterType === 'wed_off') return !daysWithClasses.has('Wed');
+                        if (filterType === 'thu_off') return !daysWithClasses.has('Thu');
+                        return true;
+                    });
+                }
+
+                this.filteredSchedules = filtered;
+                this.currentScheduleIndex = 0;
+                this.renderSchedule();
+            },
+
+            renderSchedule() {
+                const container = document.getElementById('scheduleContainer');
+                const counter = document.getElementById('scheduleCounter');
+                
+                if (this.filteredSchedules.length === 0) {
+                    container.innerHTML = `
+                        <div class="absolute inset-0 flex items-center justify-center text-gray-400 bg-gray-900">
+                            <div class="text-center">
+                                <div class="text-4xl mb-4">🔍</div>
+                                <p>No schedules match your filters</p>
+                            </div>
+                        </div>`;
+                    counter.innerText = "0 / 0";
+                    return;
+                }
+
+                const schedule = this.filteredSchedules[this.currentScheduleIndex];
+                counter.innerText = `${this.currentScheduleIndex + 1} / ${this.filteredSchedules.length}`;
+
+                const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu'];
+                const startHour = 8; // 8:00 AM
+                const endHour = 22; // 10:00 PM
+                const totalMinutes = (endHour - startHour) * 60;
+                
+                // Generate Time Markers
+                let timeMarkers = '';
+                for (let h = startHour; h <= endHour; h++) {
+                    const left = ((h - startHour) * 60 / totalMinutes) * 100;
+                    // Header marker (with text)
+                    // Grid line (full height, no text, handled in CSS)
+                }
+
+                // We build the grid manually to ensure alignment
+                let html = `
+                <div class="p-6 bg-white h-full overflow-auto" id="scheduleTableExport">
+                    <div class="min-w-[1000px]"> <!-- Force min width for scrolling -->
+                        
+                        <!-- Timeline Header -->
+                        <div class="flex border-b border-gray-300 mb-2 pb-1">
+                            <div class="w-20 flex-shrink-0"></div> <!-- Spacer for Day labels -->
+                            <div class="flex-1 relative h-6">
+                                ${(() => {
+                                    let markers = '';
+                                    for (let h = startHour; h <= endHour; h++) {
+                                        const left = ((h - startHour) * 60 / totalMinutes) * 100;
+                                        markers += `<div class="absolute top-0 text-xs text-gray-500 transform -translate-x-1/2" style="left: ${left}%">${h}:00</div>`;
+                                    }
+                                    return markers;
+                                })()}
+                            </div>
+                        </div>
+
+                        <!-- Days Rows -->
+                        <div class="flex flex-col border border-gray-200 rounded-lg overflow-hidden">
+                `;
+
+                days.forEach((day, index) => {
+                    const isLast = index === days.length - 1;
+                    html += `
+                        <div class="flex h-24 ${isLast ? '' : 'border-b border-gray-200'} bg-white relative">
+                            <!-- Day Label -->
+                            <div class="w-20 flex-shrink-0 flex items-center justify-center bg-gray-50 border-r border-gray-200 font-bold text-gray-700 text-sm">
+                                ${day}
+                            </div>
+                            
+                            <!-- Timeline Area -->
+                            <div class="flex-1 relative">
+                                <!-- Background Grid Lines -->
+                                <div class="absolute inset-0 w-full h-full pointer-events-none">
+                                    ${(() => {
+                                        let lines = '';
+                                        for (let h = startHour; h <= endHour; h++) {
+                                            const left = ((h - startHour) * 60 / totalMinutes) * 100;
+                                            lines += `<div class="absolute top-0 bottom-0 border-l border-gray-100" style="left: ${left}%"></div>`;
+                                        }
+                                        return lines;
+                                    })()}
+                                </div>
+
+                                <!-- Events -->
+                                ${this.renderDayEvents(schedule, day, startHour, totalMinutes)}
+                            </div>
+                        </div>
+                    `;
+                });
+
+                html += `
+                        </div>
+                    </div>
+
+                    <!-- Course Details Cards -->
+                    <div class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 border-t border-gray-200 pt-6">
+                        ${schedule.map(c => `
+                            <div class="bg-gray-50 p-3 rounded border border-gray-200 text-sm hover:shadow-md transition">
+                                <div class="flex justify-between font-bold text-gray-800">
+                                    <span class="text-purple-700">${c.fullCode}</span>
+                                    <span class="bg-purple-100 text-purple-800 px-2 rounded text-xs flex items-center">${c.section}</span>
+                                </div>
+                                <div class="text-gray-600 truncate mt-1" title="${c.name}">${c.name}</div>
+                                <div class="text-gray-500 text-xs mt-1 flex items-center gap-1">
+                                    <span>👤</span> ${c.instructor || 'N/A'}
+                                </div>
+                                <div class="text-gray-500 text-xs mt-1 flex flex-wrap gap-2">
+                                    ${this.formatTimes(c.times)}
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>`;
+
+                container.innerHTML = html;
+            },
+
+            renderDayEvents(schedule, day, startHour, totalMinutes) {
+                let html = '';
+                schedule.forEach(course => {
+                    const timeStr = course.times[day];
+                    if (!timeStr) return;
+
+                    const time = this.parseTime(timeStr);
+                    if (!time) return;
+
+                    // Calculate Position
+                    const startMin = (time.start - (startHour * 60));
+                    const duration = time.end - time.start;
+                    
+                    const left = (startMin / totalMinutes) * 100;
+                    const width = (duration / totalMinutes) * 100;
+
+                    html += `
+                        <div class="absolute top-2 bottom-2 bg-purple-100 border-l-4 border-purple-600 rounded shadow-sm hover:shadow-md hover:bg-purple-200 transition overflow-hidden cursor-pointer z-10"
+                             style="left: ${left}%; width: ${width}%;"
+                             title="${course.fullCode} - ${course.name}\n${timeStr}\n${course.section}">
+                            <div class="p-1.5 h-full flex flex-col justify-center">
+                                <div class="font-bold text-purple-900 text-xs truncate leading-tight">${course.fullCode}</div>
+                                <div class="text-purple-700 text-[10px] truncate leading-tight">${timeStr}</div>
+                                <div class="text-purple-600 text-[10px] truncate leading-tight">${course.section}</div>
+                            </div>
+                        </div>
+                    `;
+                });
+                return html;
+            },
+
+            nextSchedule() {
+                if (this.currentScheduleIndex < this.filteredSchedules.length - 1) {
+                    this.currentScheduleIndex++;
+                    this.renderSchedule();
+                }
+            },
+
+            prevSchedule() {
+                if (this.currentScheduleIndex > 0) {
+                    this.currentScheduleIndex--;
+                    this.renderSchedule();
+                }
+            },
+
+            saveSchedule() {
+                if (!this.filteredSchedules[this.currentScheduleIndex]) return;
+                const s = this.filteredSchedules[this.currentScheduleIndex];
+                const saved = JSON.parse(localStorage.getItem('savedSchedules') || '[]');
+                
+                // Check duplicate
+                if (saved.some(x => JSON.stringify(x) === JSON.stringify(s))) {
+                    alert('Already saved!');
+                    return;
+                }
+                
+                saved.push(s);
+                localStorage.setItem('savedSchedules', JSON.stringify(saved));
+                this.loadSavedSchedules();
+                alert('Schedule saved!');
+            },
+
+            loadSavedSchedules() {
+                const saved = JSON.parse(localStorage.getItem('savedSchedules') || '[]');
+                const list = document.getElementById('savedSchedulesList');
+                const section = document.getElementById('savedSection');
+                
+                if (saved.length > 0) {
+                    section.classList.remove('hidden');
+                    list.innerHTML = saved.map((s, i) => `
+                        <div class="bg-gray-800 p-3 rounded border border-gray-700 flex justify-between items-center">
+                            <span class="text-purple-400 font-bold">Schedule #${i+1}</span>
+                            <div class="flex gap-2">
+                                <button onclick="app.viewSaved(${i})" class="text-xs bg-blue-600 px-2 py-1 rounded text-white">View</button>
+                                <button onclick="app.deleteSaved(${i})" class="text-xs bg-red-600 px-2 py-1 rounded text-white">Del</button>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    section.classList.add('hidden');
+                }
+            },
+
+            viewSaved(i) {
+                const saved = JSON.parse(localStorage.getItem('savedSchedules') || '[]');
+                if (saved[i]) {
+                    this.filteredSchedules = [saved[i]];
+                    this.currentScheduleIndex = 0;
+                    this.renderSchedule();
+                    document.getElementById('scheduleContainer').scrollIntoView({behavior:'smooth'});
+                }
+            },
+
+            deleteSaved(i) {
+                const saved = JSON.parse(localStorage.getItem('savedSchedules') || '[]');
+                saved.splice(i, 1);
+                localStorage.setItem('savedSchedules', JSON.stringify(saved));
+                this.loadSavedSchedules();
+            },
+
+            exportImage() {
+                const el = document.getElementById('scheduleTableExport');
+                if(!el) return;
+                html2canvas(el).then(canvas => {
+                    const a = document.createElement('a');
+                    a.download = 'schedule.png';
+                    a.href = canvas.toDataURL();
+                    a.click();
+                });
+            },
+
+            exportPDF() {
+                const el = document.getElementById('scheduleTableExport');
+                if(!el) return;
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF('l', 'mm', 'a4');
+                html2canvas(el, {scale: 2}).then(canvas => {
+                    const img = canvas.toDataURL('image/png');
+                    const props = doc.getImageProperties(img);
+                    const pdfWidth = doc.internal.pageSize.getWidth();
+                    const pdfHeight = (props.height * pdfWidth) / props.width;
+                    doc.addImage(img, 'PNG', 0, 10, pdfWidth, pdfHeight);
+                    doc.save('schedule.pdf');
+                });
+            }
+        };
+
+        app.init();
+    </script>
+</body>
+</html>

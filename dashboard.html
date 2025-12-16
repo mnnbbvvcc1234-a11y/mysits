@@ -1,0 +1,360 @@
+<!-- Focus & Planting Widget for Dashboard -->
+<div class="focus-widget">
+    <div class="widget-header">
+        <h3><i class="fas fa-seedling"></i> Focus & Plant</h3>
+        <button class="widget-expand-btn"><i class="fas fa-expand"></i></button>
+    </div>
+    
+    <div class="widget-body">
+        <!-- Current Active Planet -->
+        <div class="active-planet">
+            <div class="planet-icon">
+                <i class="fas fa-globe-americas"></i>
+            </div>
+            <div class="planet-info">
+                <h4>Active Planet</h4>
+                <p class="planet-name">Earth</p>
+                <p class="planet-progress">3/6 flowers planted</p>
+            </div>
+        </div>
+        
+        <!-- Quick Timer -->
+        <div class="quick-timer">
+            <div class="timer-display-small">25:00</div>
+            <div class="timer-controls-small">
+                <button class="timer-btn-small start-small"><i class="fas fa-play"></i></button>
+                <button class="timer-btn-small reset-small"><i class="fas fa-redo"></i></button>
+            </div>
+        </div>
+        
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <button class="action-btn plant-btn">
+                <i class="fas fa-seedling"></i>
+                Plant Now
+            </button>
+            <button class="action-btn focus-btn">
+                <i class="fas fa-play-circle"></i>
+                Quick Focus
+            </button>
+        </div>
+        
+        <!-- Today's Progress -->
+        <div class="today-progress">
+            <h4><i class="fas fa-chart-line"></i> Today's Progress</h4>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 60%"></div>
+            </div>
+            <p class="progress-text">45/75 minutes completed</p>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Focus Widget Styles */
+    .focus-widget {
+        background-color: rgba(26, 26, 58, 0.9);
+        border-radius: 15px;
+        padding: 20px;
+        box-shadow: 0 0 15px rgba(138, 43, 226, 0.3);
+        border: 1px solid #8a2be2;
+        margin-bottom: 25px;
+    }
+    
+    .widget-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid rgba(138, 43, 226, 0.5);
+    }
+    
+    .widget-header h3 {
+        color: #ffd700;
+        font-size: 1.3rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .widget-expand-btn {
+        background: transparent;
+        border: 1px solid #8a2be2;
+        color: white;
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    
+    .widget-expand-btn:hover {
+        background-color: #8a2be2;
+        transform: rotate(90deg);
+    }
+    
+    .active-planet {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 20px;
+        padding: 15px;
+        background-color: rgba(0, 0, 0, 0.3);
+        border-radius: 10px;
+        border-left: 4px solid #32cd32;
+    }
+    
+    .planet-icon {
+        width: 50px;
+        height: 50px;
+        background: linear-gradient(to bottom right, #8a2be2, #1a1a3a);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: #ffd700;
+    }
+    
+    .planet-info h4 {
+        color: #aaa;
+        font-size: 0.9rem;
+        margin-bottom: 5px;
+    }
+    
+    .planet-name {
+        color: white;
+        font-weight: bold;
+        font-size: 1.2rem;
+        margin-bottom: 5px;
+    }
+    
+    .planet-progress {
+        color: #32cd32;
+        font-size: 0.9rem;
+    }
+    
+    .quick-timer {
+        background-color: rgba(0, 0, 0, 0.3);
+        border-radius: 10px;
+        padding: 15px;
+        margin-bottom: 20px;
+        text-align: center;
+        border: 1px solid rgba(255, 215, 0, 0.3);
+    }
+    
+    .timer-display-small {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: #ffd700;
+        font-family: 'Courier New', monospace;
+        margin-bottom: 10px;
+    }
+    
+    .timer-controls-small {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+    }
+    
+    .timer-btn-small {
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        transition: all 0.3s;
+    }
+    
+    .timer-btn-small.start-small {
+        background-color: #32cd32;
+        color: white;
+    }
+    
+    .timer-btn-small.start-small:hover {
+        background-color: #2e8b57;
+        transform: scale(1.1);
+    }
+    
+    .timer-btn-small.reset-small {
+        background-color: #ff4444;
+        color: white;
+    }
+    
+    .timer-btn-small.reset-small:hover {
+        background-color: #cc0000;
+        transform: scale(1.1);
+    }
+    
+    .quick-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+    
+    .action-btn {
+        padding: 12px;
+        border: none;
+        border-radius: 10px;
+        font-weight: bold;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: all 0.3s;
+        font-size: 0.95rem;
+    }
+    
+    .action-btn.plant-btn {
+        background: linear-gradient(to right, #ff69b4, #c71585);
+        color: white;
+    }
+    
+    .action-btn.plant-btn:hover {
+        background: linear-gradient(to right, #c71585, #ff69b4);
+        box-shadow: 0 0 10px rgba(255, 105, 180, 0.5);
+    }
+    
+    .action-btn.focus-btn {
+        background: linear-gradient(to right, #8a2be2, #6a0dad);
+        color: white;
+    }
+    
+    .action-btn.focus-btn:hover {
+        background: linear-gradient(to right, #6a0dad, #8a2be2);
+        box-shadow: 0 0 10px rgba(138, 43, 226, 0.5);
+    }
+    
+    .today-progress {
+        background-color: rgba(0, 0, 0, 0.3);
+        border-radius: 10px;
+        padding: 15px;
+    }
+    
+    .today-progress h4 {
+        color: #aaa;
+        font-size: 1rem;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .progress-bar {
+        width: 100%;
+        height: 10px;
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 5px;
+        overflow: hidden;
+        margin-bottom: 10px;
+    }
+    
+    .progress-fill {
+        height: 100%;
+        background: linear-gradient(to right, #32cd32, #ffd700);
+        border-radius: 5px;
+    }
+    
+    .progress-text {
+        color: #32cd32;
+        font-size: 0.9rem;
+        text-align: center;
+    }
+</style>
+
+<script>
+    // Widget functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        // Expand button
+        document.querySelector('.widget-expand-btn').addEventListener('click', function() {
+            // In a real app, this would open the full focus page
+            window.location.href = 'focus.html';
+        });
+        
+        // Plant button
+        document.querySelector('.plant-btn').addEventListener('click', function() {
+            window.location.href = 'focus.html#planting';
+        });
+        
+        // Focus button
+        document.querySelector('.focus-btn').addEventListener('click', function() {
+            window.location.href = 'focus.html#focus';
+        });
+        
+        // Timer buttons
+        let widgetTimerRunning = false;
+        let widgetTimerTime = 25 * 60;
+        let widgetTimerInterval = null;
+        
+        const timerDisplay = document.querySelector('.timer-display-small');
+        const startBtn = document.querySelector('.start-small');
+        const resetBtn = document.querySelector('.reset-small');
+        
+        function updateWidgetTimerDisplay() {
+            const minutes = Math.floor(widgetTimerTime / 60);
+            const seconds = widgetTimerTime % 60;
+            timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+        
+        startBtn.addEventListener('click', function() {
+            if (widgetTimerRunning) {
+                // Pause timer
+                widgetTimerRunning = false;
+                clearInterval(widgetTimerInterval);
+                startBtn.innerHTML = '<i class="fas fa-play"></i>';
+                startBtn.style.backgroundColor = '#32cd32';
+            } else {
+                // Start timer
+                widgetTimerRunning = true;
+                startBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                startBtn.style.backgroundColor = '#ffa500';
+                
+                widgetTimerInterval = setInterval(() => {
+                    widgetTimerTime--;
+                    updateWidgetTimerDisplay();
+                    
+                    if (widgetTimerTime <= 0) {
+                        clearInterval(widgetTimerInterval);
+                        widgetTimerRunning = false;
+                        startBtn.innerHTML = '<i class="fas fa-play"></i>';
+                        startBtn.style.backgroundColor = '#32cd32';
+                        widgetTimerTime = 25 * 60;
+                        updateWidgetTimerDisplay();
+                        
+                        // Show notification
+                        if (Notification.permission === 'granted') {
+                            new Notification('Galaxy StudyVerse', {
+                                body: 'Focus session completed! Time for a break.',
+                                icon: 'https://i.postimg.cc/7C2s5CRF/earth.jpg'
+                            });
+                        }
+                    }
+                }, 1000);
+            }
+        });
+        
+        resetBtn.addEventListener('click', function() {
+            widgetTimerRunning = false;
+            clearInterval(widgetTimerInterval);
+            widgetTimerTime = 25 * 60;
+            updateWidgetTimerDisplay();
+            startBtn.innerHTML = '<i class="fas fa-play"></i>';
+            startBtn.style.backgroundColor = '#32cd32';
+        });
+        
+        // Initialize timer display
+        updateWidgetTimerDisplay();
+        
+        // Request notification permission
+        if ('Notification' in window && Notification.permission === 'default') {
+            Notification.requestPermission();
+        }
+    });
+</script>
